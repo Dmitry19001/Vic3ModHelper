@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Vic3ModManager.MusicAlbumControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="musicAlbumControl"
+             Margin="5">
+    
+    <UserControl.Resources>
+        <Style x:Key="DeleteButtonBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#404040"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="white" Duration="0:0:0.3" 
+                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="#404040" Duration="0:0:0.3" 
+                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="10, 5"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#D8000000"/>
+        </Style>
+    </UserControl.Resources>
+    
+    <Border x:Name="AlbumControlBorder" BorderBrush="#404040" BorderThickness="1" CornerRadius="10">
+        <Border.Background>
+            <ImageBrush ImageSource="{Binding AlbumImage, ElementName=musicAlbumControl}" Stretch="UniformToFill" TileMode="None" Opacity="0.61"/>
+        </Border.Background>
+        <Grid>
+            <Border Style="{StaticResource DeleteButtonBorderStyle}" CornerRadius="100" MaxHeight="30" MaxWidth="30" VerticalAlignment="Top"  HorizontalAlignment="Right" Padding="2" Margin="-1">
+                <Image x:Name="AlbumDeleteButton" Cursor="Hand" ToolTip="Delete"  MouseDown="DeleteAlbumButton_MouseDown" Source="/Controls/recycle-bin.png"/>
+            </Border>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <TextBlock Text="{Binding Title, ElementName=musicAlbumControl}" Style="{StaticResource TextBlockStyle}"/>
+                <TextBlock Text="{Binding AdditionalInfo, ElementName=musicAlbumControl}" Style="{StaticResource TextBlockStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

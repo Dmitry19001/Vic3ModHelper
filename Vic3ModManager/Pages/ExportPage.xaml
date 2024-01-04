@@ -1,0 +1,40 @@
+﻿<Page x:Class="Vic3ModManager.ExportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Vic3ModManager"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ExportPage"
+      Foreground="White">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--Here goes path chooser-->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="Export to:" Width="auto" TextAlignment="Center" Margin="0,10"/>
+                <!--Put elements below to grid:-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <local:AnimatedPlaceholderTextBox x:Name="ExportPathTextBox" Placeholder="Path to mod folder"/>
+                    <Button Content="..." Command="{Binding Path=ExportPathCommand}" MinWidth="50" Grid.Column="1" Margin="10, 0" Cursor="Hand"/>
+                </Grid>
+            </StackPanel>
+
+        </Grid>
+        <Button Grid.Row="1" x:Name="BeginExportButton" Content="Export" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="10" Cursor="Hand" Click="BeginExportButton_Click"/>
+    </Grid>
+</Page>

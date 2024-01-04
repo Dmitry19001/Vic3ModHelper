@@ -2,17 +2,28 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="vinyl-disc.png" />
+    <None Remove="Controls\recycle-bin.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Controls\recycle-bin.png" />
+    <Resource Include="Pages\vinyl-disc.png" />
     <Resource Include="vinyl-disc.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FFMpegCore" Version="5.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Pfim" Version="0.11.2" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
 </Project>

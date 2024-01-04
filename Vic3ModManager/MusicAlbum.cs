@@ -22,10 +22,10 @@ namespace Vic3ModManager
         /// <param name="songs">An array of songs contained in the album.</param>
         public MusicAlbum(string id, string title, Song[] songs, string coverImagePath)
         {
-            this.Id = id;
-            this.Title = title;
-            this.Songs = new List<Song>(songs ?? Array.Empty<Song>());
-            this.CoverImagePath = coverImagePath ?? "";
+            Id = id;
+            Title = title;
+            Songs = new List<Song>(songs ?? Array.Empty<Song>());
+            CoverImagePath = coverImagePath ?? "";
         }
 
         /// <summary>
@@ -53,21 +53,26 @@ namespace Vic3ModManager
         /// <summary>
         /// Gets or sets the unique identifier for the album.
         /// </summary>
-        public string Id { get => id; set => id = value ?? throw new ArgumentNullException(nameof(value)); }
+        public string Id { get => id; set => id = value ?? string.Empty; }
 
         /// <summary>
         /// Gets or sets the title of the album.
         /// </summary>
-        public string Title { get => title; set => title = value ?? throw new ArgumentNullException(nameof(value)); }
+        public string Title { get => title; set => title = value ?? string.Empty; }
 
         /// <summary>
         /// Gets the list of songs in the album.
         /// </summary>
-        public List<Song> Songs { get => songs; private set => songs = value; } // Consider private setter if you don't want Songs to be replaced from outside
+        public List<Song> Songs { get => songs; private set => songs = value; }
         
         /// <summary>
         /// Gets or sets path to the album cover image.
         /// </summary>
         public string CoverImagePath { get => coverImagePath; set => coverImagePath = value; }
+
+        public override string ToString()
+        {
+            return $"ID: {Id}, Title: {Title}";
+        }
     }
 }

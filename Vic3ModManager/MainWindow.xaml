@@ -5,24 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vic3ModManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="900" MinWidth="800">
     <Window.Resources>
         <Style x:Key="NavigationButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#303030"/>
+            <Setter Property="Background" Value="#404040"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="15,0"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <!-- Add other setters for additional styling if needed -->
         </Style>
     </Window.Resources>
-    <Grid Height="434" VerticalAlignment="Center" HorizontalAlignment="Right" Width="800">
-        <StackPanel x:Name="Navigations" Height="50" Orientation="Horizontal" VerticalAlignment="Top" Margin="20,10,20,0" MinWidth="100" UseLayoutRounding="False">
-            <Button x:Name="HomeButton" Style="{StaticResource NavigationButtonStyle}" Content="Home" Click="Home_Click"/>
-            <Button x:Name="MusicManagerButton" Style="{StaticResource NavigationButtonStyle}" Content="Music Manager" Click="MusicManagerButton_Click"/>
-            <Button x:Name="LocalizationManagerButton" Style="{StaticResource NavigationButtonStyle}" Content="Localization Manager" Click="MusicManagerButton_Click"/>
-        </StackPanel>
+    <Grid Background="#FF303030">
+        <StackPanel x:Name="Navigations" Height="50" Orientation="Horizontal" VerticalAlignment="Top" Margin="20,10,20,0" MinWidth="100" UseLayoutRounding="False"/>
         <Frame x:Name="ContentFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="ContentFrame_ContentRendered"/>
 
     </Grid>

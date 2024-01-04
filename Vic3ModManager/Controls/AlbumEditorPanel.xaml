@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Vic3ModManager.AlbumEditorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vic3ModManager"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <UserControl.Resources>
+        <Style x:Key="InputBoxStyle" TargetType="local:AnimatedPlaceholderTextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid x:Name="MusicAlbumEditorPanel" Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0, 10, 0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <local:AnimatedPlaceholderTextBox Style="{StaticResource InputBoxStyle}" x:Name="AlbumTitleInput" Grid.Row="0" Placeholder="Title"/>
+                    <local:AnimatedPlaceholderTextBox Style="{StaticResource InputBoxStyle}" x:Name="AlbumIdInput" Grid.Row="1" Placeholder="ID" Visibility="Hidden"/>
+                </Grid>
+                <Grid x:Name="ImageContainer" Grid.Column="1" HorizontalAlignment="Right">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Cursor="Hand" MouseDown="AlbumCoverImage_MouseDown">
+                        <Image x:Name="AlbumCoverImage" Source="/Pages/vinyl-disc.png"
+                    Stretch="Uniform"/>
+                    </Grid>
+
+                    <TextBlock Text="Cover Image" Grid.Row="1" TextAlignment="Center" Foreground="White"/>
+
+                    <TextBlock Text="Recommended Size 800x450" Grid.Row="2" TextAlignment="Center" Foreground="White" Margin="0,5,0,15"/>
+                </Grid>
+            </Grid>
+
+
+            <Border Grid.Row="1" BorderThickness="2" BorderBrush="White" CornerRadius="5">
+                <Grid>
+                    <Label Content="Songs" Foreground="White" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="AddSongButton" Content="Add new..." Background="#404040" Foreground="White" VerticalAlignment="Top" Click="AddSongButton_Click" Margin="0, 45"/>
+                    <Label x:Name="SongsEmptyLabel" Content="SONG LIST IS EMPTY" Margin="0, 75, 0, 0" FontSize="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                        <Label.Foreground>
+                            <SolidColorBrush Color="White" Opacity="0.3"/>
+                        </Label.Foreground>
+                    </Label>
+                    <ScrollViewer Margin="0,75,0,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="SongsContainer" CanVerticallyScroll="True"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
