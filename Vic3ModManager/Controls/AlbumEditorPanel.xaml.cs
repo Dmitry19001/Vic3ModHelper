@@ -77,7 +77,7 @@ namespace Vic3ModManager
         {
             defaultAlbumCover = new BitmapImage();
             defaultAlbumCover.BeginInit();
-            defaultAlbumCover.UriSource = new Uri("pack://application:,,,/vinyl-disc.png");
+            defaultAlbumCover.UriSource = new Uri("pack://application:,,,/Icons/vinyl-disc.png");
             defaultAlbumCover.CacheOption = BitmapCacheOption.OnLoad;
             defaultAlbumCover.EndInit();
         }
@@ -143,12 +143,10 @@ namespace Vic3ModManager
 
         private void AddSongControl(Song song)
         {
-            SongControl songControl = new()
-            {
-                Title = $"{song.Name}",
-                Duration = $"{song.DurationToString()}"
-            };
+            string fileExtension = System.IO.Path.GetExtension(song.OriginalPath).Remove(0,1);
+            SongControl songControl = new(song.Title, song.DurationToString(), fileExtension);
 
+            songControl.OnSongEdited += SongControl_OnSongEdited;
             songControl.DeleteButtonClick += SongDeleteOnClick;
 
             SongsContainer.Children.Add(songControl);
@@ -158,12 +156,32 @@ namespace Vic3ModManager
             OnDataUpdated?.Invoke(this, new RoutedEventArgs());
         }
 
+        private void SongControl_OnSongEdited(object sender, RoutedEventArgs e)
+        {
+            // getting song index
+            int songIndex = SongsContainer.Children.IndexOf((UIElement)sender);
+            if (songIndex >= 0)
+            {
+                // getting song control
+                SongControl songControl = (SongControl)sender;
+                // getting song from album
+                Song song = currentAlbum.Songs[songIndex];
+                // updating song name
+                song.Title = songControl.Title;
+
+                currentAlbum.Songs[songIndex] = song;
+
+                Debug.WriteLine($"Song {currentAlbum.Songs[songIndex].Title} edited");
+            }
+        }
+
         private void SongDeleteOnClick(object sender, RoutedEventArgs e)
         {
             int songIndex = SongsContainer.Children.IndexOf((UIElement)sender);
             if (songIndex >= 0)
             {
-                currentAlbum.RemoveSong(currentAlbum.Songs[songIndex]);
+                currentAlbum.RemoveSongAt(songIndex);
+                SongsContainer.Children.RemoveAt(songIndex);
                 UpdateSongsEmptyLabel();
                 OnDataUpdated?.Invoke(this, new RoutedEventArgs());
             }

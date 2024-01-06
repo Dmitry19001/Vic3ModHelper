@@ -19,9 +19,19 @@ namespace Vic3ModManager
 
         public event TextChangedEventHandler TextChanged;
 
+        //Need to make border color transparent when is disabled
+
+
+
         public AnimatedPlaceholderTextBox()
         {
             InitializeComponent();
+        }
+
+        public bool IsReadOnly
+        {
+            get { return InputTextBox.IsReadOnly; }
+            set { InputTextBox.IsReadOnly = value; }
         }
 
         public string Text

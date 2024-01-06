@@ -19,7 +19,7 @@ namespace Vic3ModManager
         
         private event RoutedEventHandler AlbumImagePathChanged;
 
-        public static readonly ImageSource DefaultAlbumImage = new BitmapImage(new Uri("pack://application:,,,/vinyl-disc.png"));
+        public static readonly ImageSource DefaultAlbumImage = new BitmapImage(new Uri("pack://application:,,,/Icons/vinyl-disc.png"));
 
         public static readonly DependencyProperty AlbumTitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(MusicAlbumControl), new PropertyMetadata("Untitled"));
@@ -34,7 +34,7 @@ namespace Vic3ModManager
             DependencyProperty.Register("AlbumIsSelected", typeof(bool), typeof(MusicAlbumControl), new PropertyMetadata(false));
 
         public static readonly DependencyProperty AlbumImagePathProperty = 
-            DependencyProperty.Register("AlbumImagePath", typeof(string), typeof(MusicAlbumControl), new PropertyMetadata("pack://application:,,,/vinyl-disc.png"));
+            DependencyProperty.Register("AlbumImagePath", typeof(string), typeof(MusicAlbumControl), new PropertyMetadata("pack://application:,,,/Icons/vinyl-disc.png"));
 
         public MusicAlbumControl()
         {

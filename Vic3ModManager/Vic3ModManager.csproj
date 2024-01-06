@@ -9,14 +9,20 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Controls\recycle-bin.png" />
-  </ItemGroup>
+  <!--<ItemGroup>
+	  <None Include="Icons\edit.png" />
+	  <None Include="Icons\recycle-bin.png" />
+	  <None Include="Icons\vinyl-disc.png" />
+	  <None Include="Icons\check.png" />
+	  <None Include="Icons\close.png" />
+  </ItemGroup>-->
 
   <ItemGroup>
-    <Resource Include="Controls\recycle-bin.png" />
-    <Resource Include="Pages\vinyl-disc.png" />
-    <Resource Include="vinyl-disc.png" />
+    <Resource Include="Icons\edit.png" />
+    <Resource Include="Icons\recycle-bin.png" />
+    <Resource Include="Icons\vinyl-disc.png" />
+    <Resource Include="Icons\check.png" />
+    <Resource Include="Icons\close.png" />
   </ItemGroup>
 
   <ItemGroup>

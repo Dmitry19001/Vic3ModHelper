@@ -41,7 +41,7 @@
         </Border.Background>
         <Grid>
             <Border Style="{StaticResource DeleteButtonBorderStyle}" CornerRadius="100" MaxHeight="30" MaxWidth="30" VerticalAlignment="Top"  HorizontalAlignment="Right" Padding="2" Margin="-1">
-                <Image x:Name="AlbumDeleteButton" Cursor="Hand" ToolTip="Delete"  MouseDown="DeleteAlbumButton_MouseDown" Source="/Controls/recycle-bin.png"/>
+                <Image x:Name="AlbumDeleteButton" Cursor="Hand" ToolTip="Delete"  MouseDown="DeleteAlbumButton_MouseDown" Source="/Icons/recycle-bin.png"/>
             </Border>
             <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Text="{Binding Title, ElementName=musicAlbumControl}" Style="{StaticResource TextBlockStyle}"/>

@@ -87,7 +87,7 @@ namespace Vic3ModManager
                         continue;
                     }
 
-                    string songName = StringHelpers.ReplaceSpaces(song.Name);
+                    string songName = StringHelpers.ReplaceSpaces(song.Title);
                     songName = StringHelpers.TransliterateCyrillicToLatin(songName);
 
                     string destinationPath = System.IO.Path.Combine(modDirectory, "music", albumTitle, $"{songName}.ogg");
@@ -149,7 +149,7 @@ namespace Vic3ModManager
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.ReplaceSpaces(song.Name);
+                    string songName = StringHelpers.ReplaceSpaces(song.Title);
                     songName = StringHelpers.TransliterateCyrillicToLatin(songName);
 
                     stringBuilder.AppendLine($"{songName} = {{");
@@ -198,7 +198,7 @@ namespace Vic3ModManager
             
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.ReplaceSpaces(song.Name);
+                    string songName = StringHelpers.ReplaceSpaces(song.Title);
                     songName = StringHelpers.TransliterateCyrillicToLatin(songName);
 
                     stringBuilder.AppendLine($"        \"{songName}\"");

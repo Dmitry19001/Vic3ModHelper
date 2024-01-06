@@ -50,6 +50,13 @@ namespace Vic3ModManager
             this.Songs.Remove(song);
         }
 
+        public void RemoveSongAt(int index)
+        {
+            if (index < 0 || index >= Songs.Count)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            this.Songs.RemoveAt(index);
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the album.
         /// </summary>

@@ -11,7 +11,7 @@ namespace Vic3ModManager
     /// </summary>
     public class Song
     {
-        private string? name;
+        private string? title;
         private string? originalPath;
         private int duration = 0;
         private int pauseFactor;
@@ -22,7 +22,7 @@ namespace Vic3ModManager
         /// <summary>
         /// Initializes a new instance of the <see cref="Song"/> class.
         /// </summary>
-        /// <param name="name">The name of the song.</param>
+        /// <param name="title">The title of the song.</param>
         /// <param name="originalPath">The original file path of the song.</param>
         /// <param name="duration">The duration of the song.</param>
         /// <param name="pauseFactor">The pause factor of the song.</param>
@@ -34,7 +34,7 @@ namespace Vic3ModManager
         /// The exact mechanics of how this influences the game's behavior are not fully understood.
         /// </param>
 
-        public Song(string? name,
+        public Song(string? title,
                     string? originalPath,
                     int duration = 0,
                     int pauseFactor = 75,
@@ -42,7 +42,7 @@ namespace Vic3ModManager
                     bool triggerPrioOverride = false,
                     bool mood = true)
         {
-            this.Name = name;
+            this.Title = title;
             this.OriginalPath = originalPath;
             this.Duration = duration;
 
@@ -52,7 +52,7 @@ namespace Vic3ModManager
             this.Mood = mood;
         }
 
-        public string? Name { get => name; set => name = value; }
+        public string? Title { get => title; set => title = value; }
         public string? OriginalPath { get => originalPath; set => originalPath = value; }
         public int PauseFactor { get => pauseFactor; set => pauseFactor = value; }
         public bool CanBeInterrupted { get => canBeInterrupted; set => canBeInterrupted = value; }

@@ -7,13 +7,13 @@
              x:Name="songControl"
              mc:Ignorable="d" Height="90" Margin="10, 5">
     <UserControl.Resources>
-        <Style TargetType="Label">
+        <Style TargetType="Label" x:Key="LabelStyle">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Margin" Value="10,0,10,0"/>
         </Style>
     </UserControl.Resources>
     <Border BorderBrush="White" BorderThickness="1" CornerRadius="10" Margin="0,0,10,0">
@@ -21,12 +21,20 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Content="{Binding Duration, ElementName=songControl}" MinWidth="50" Grid.Column="0"/>
-            <Label Content="{Binding Title, ElementName=songControl}" Grid.Column="1" HorizontalAlignment="Left"/>
-            <Button Content="X" Width="50" Height="50" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Red" FontSize="24" Click="Button_Click" Cursor="Hand" Grid.Column="2"/>
+            <Label Style="{StaticResource LabelStyle}" Content="{Binding Duration, ElementName=songControl}" MinWidth="50" Grid.Column="0"/>
+            <local:AnimatedPlaceholderTextBox x:Name="SongNameInput" IsReadOnly="True" Placeholder="" Text="{Binding Title, ElementName=songControl}" FontSize="18" Grid.Column="1" VerticalAlignment="Center"/>
+            <Label x:Name="SongExtensionLabel" Style="{StaticResource LabelStyle}" Content="{Binding SongExtension, ElementName=songControl}" Foreground="Yellow" Opacity="0.5" Cursor="Help" FontSize="24" Grid.Column="2" VerticalAlignment="Center"/>
+            <Border x:Name="EditButton" BorderThickness="0" CornerRadius="100" Background="#FF4C4C4C" Grid.Column="3" Width="40" Height="40" Padding="7" Cursor="Hand" Margin="0,0,10,0" MouseDown="EditButton_Click" MouseEnter="DeleteButton_MouseEnter" MouseLeave="DeleteButton_MouseLeave">
+                <Image Source="/Icons/edit.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <Border x:Name="DeleteButton" BorderThickness="0" CornerRadius="100" Background="#FF4C4C4C" Grid.Column="4" Width="40" Height="40" Padding="7" Cursor="Hand" Margin="0,0,10,0" MouseDown="DeleteButton_Click" MouseEnter="DeleteButton_MouseEnter" MouseLeave="DeleteButton_MouseLeave">
+                <Image Source="/Icons/recycle-bin.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
         </Grid>
     </Border>
 </UserControl>
