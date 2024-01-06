@@ -13,4 +13,3 @@ Currently is a simple tool that creates music mods Victoria 3.
 * PNG, JPG to DDS conversion (WIP)
 * MP3 to OGG conversion (WIP)
 * Localization system (Not started yet)
-* Song data editing (Not started yet)
