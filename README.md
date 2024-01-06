@@ -7,9 +7,8 @@ Currently is a simple tool that creates music mods Victoria 3.
 * Posibility to gather songs in albums
 * Automatic transliteration from cyryllic for song names and album titles
 * DDS cover images support (preview and export)
-* PNG, JPG cover images support (preview only)
+* PNG, JPG cover images support (preview only and export)
 
 ## TO BE DONE
-* PNG, JPG to DDS conversion (WIP)
 * MP3 to OGG conversion (WIP)
 * Localization system (Not started yet)
