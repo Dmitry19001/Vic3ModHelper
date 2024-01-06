@@ -51,6 +51,11 @@ namespace Vic3ModManager.Essentials
 
         public static string TransliterateCyrillicToLatin(string input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
             string output = input.Select(c => CyrillicToLatinMap.ContainsKey(c) ? CyrillicToLatinMap[c] : c.ToString())
                                  .Aggregate((current, next) => current + next);
             return output;
