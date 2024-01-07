@@ -30,20 +30,27 @@ namespace Vic3ModManager.Essentials
         public static string ReplaceSpaces(string input)
         {
             string output = "";
+            char prevChar = ' ';
 
             for (int i = 0; i < input.Length; i++)
             {
-                switch (input[i])
+                if (input[i] == '-')
                 {
-                    case '-':
-                        break;
-                    case ' ':
-                        output += "_";
-                        break;
-                    default:
-                        output += input[i];
-                        break;
+                    continue;
                 }
+
+                if (input[i] == ' ')
+                {
+                    if (prevChar == '_')
+                        continue; // preventing multiple underscores in a row
+
+                    output += "_";
+                    prevChar = '_';
+                    continue;
+                }
+
+                output += input[i];
+                prevChar = input[i];
             }
 
             return output;
