@@ -25,30 +25,51 @@
 
 
         <Grid Margin="10" Grid.Row="1">
-             <!--Here will be form with fields for mod name, author, description-->
+            <!--Here will be form with fields for mod name, author, description-->
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!--LABEL FOR FORM-->
-                <RowDefinition Height="Auto"/> <!--FORM-->
+                <RowDefinition Height="Auto"/>
+                <!--LABEL FOR FORM-->
+                <RowDefinition Height="Auto"/>
+                <!--FORM-->
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/> <!--CONTINUE BUTTON-->
+                <RowDefinition Height="Auto"/>
+                <!--CONTINUE BUTTON-->
+                <RowDefinition Height="*"/>
+                <!--LOAD MOD-->
             </Grid.RowDefinitions>
 
-            <TextBlock Width="300" FontSize="18" Margin="0, 10" Grid.Row="0" Text="Please fill the form below to begin:"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <Grid Width="300" Margin="0,10" Grid.Row="1">
+            <TextBlock FontSize="18" Margin="0, 10" Grid.Row="0" Grid.Column="1" Text="Please fill the form below to begin:"/>
+
+            <Grid Margin="0,10" Grid.Row="1" Grid.Column="1">
                 <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModName" Placeholder="Enter your mod name here..." />
             </Grid>
 
-            <Grid Width="300" Margin="0,10" Grid.Row="2">
+            <Grid Margin="0,10" Grid.Row="2" Grid.Column="1">
                 <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModDescription" Placeholder="Enter your description here..." />
             </Grid>
 
-            <Grid Width="300" Margin="0,10" Grid.Row="3">
+            <Grid Margin="0,10" Grid.Row="3" Grid.Column="1">
                 <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModVersion" Placeholder="Mod version here..." />
             </Grid>
 
-            <Button Width="300" Margin="0,5" Grid.Row="4" Content="Continue" Click="ContinueButton_Click"/>
+            <Button Margin="0,5" Grid.Row="4" Grid.Column="1" Content="Continue" Click="ContinueButton_Click"/>
+            <Grid Grid.Row="5" Grid.Column="1" Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Or load your previous project" TextAlignment="Center" Grid.Row="0" Margin="0,10"/>
+                <ListBox x:Name="PreviousModsList" Foreground="White" Background="Transparent" Grid.Row="1"/>
+                <Button x:Name="LoadProjectButton" Grid.Row="2" Content="Load" VerticalAlignment="Top" Click="LoadProjectButton_Click"/>
+            </Grid>
         </Grid>
         
     </Grid>

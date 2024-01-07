@@ -25,11 +25,32 @@ namespace Vic3ModManager
         {
             InitializeComponent();
 
+            ShowCurrentModData();
+
+            FindPreviousMods();
+        }
+
+        private void ShowCurrentModData()
+        {
             if (ModManager.CurrentMod != null)
             {
                 ModName.Text = ModManager.CurrentMod.Name;
                 ModDescription.Text = ModManager.CurrentMod.Description;
                 ModVersion.Text = ModManager.CurrentMod.Version;
+            }
+        }
+
+        private void FindPreviousMods()
+        {
+            string[] modList = ModManager.GetAvailableMods();
+
+            if (modList.Length > 0)
+            {
+                PreviousModsList.ItemsSource = modList;
+            }
+            else
+            {
+                PreviousModsList.Visibility = Visibility.Hidden;
             }
         }
 
@@ -71,20 +92,37 @@ namespace Vic3ModManager
             if(ValidateForm())
             {
                 Mod mod = new Mod(ModName.Text, ModDescription.Text, ModVersion.Text);
-
+                MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
                 //// TODO: Multiple Mod support after saving system 
                 //// Currently clearing all mods list and adding new one
+
+                if (ModManager.CurrentMod != null && ModManager.CurrentMod.Name == mod.Name)
+                {
+                    var result = MessageBox.Show("Current action will rewrite current mod data.", "Warning", MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.Cancel) 
+                    {
+                        mainWindow.ChangePage("Music Manager");
+                        return;
+                    }
+                }
+
                 ModManager.AllMods.Clear();
                 ModManager.AddMod(mod);
                 ModManager.SwitchMod(mod);
 
-                MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+
                 mainWindow.ChangePage("Music Manager");
             }
             else
             {
                 MessageBox.Show("Please fill all the fields correctly", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void LoadProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            ModManager.LoadMod(PreviousModsList.SelectedItem.ToString());
+            ShowCurrentModData();
         }
     }
 }

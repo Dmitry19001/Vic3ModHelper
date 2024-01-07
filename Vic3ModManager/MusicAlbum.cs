@@ -70,7 +70,7 @@ namespace Vic3ModManager
         /// <summary>
         /// Gets the list of songs in the album.
         /// </summary>
-        public List<Song> Songs { get => songs; private set => songs = value; }
+        public List<Song> Songs { get => songs; set => songs = value; }
         
         /// <summary>
         /// Gets or sets path to the album cover image.

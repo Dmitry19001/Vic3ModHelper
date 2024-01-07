@@ -45,6 +45,20 @@ namespace Vic3ModManager
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             AppConfig.Instance.Save();
+
+            if (ModManager.CurrentMod != null)
+            {
+                var result = MessageBox.Show("Do you want to save the current mod before exiting?", "Save mod?", MessageBoxButton.YesNoCancel);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ModManager.SaveCurrentMod();
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
         private void GenerateNavigationButtons()
@@ -115,6 +129,25 @@ namespace Vic3ModManager
         private void ContentFrame_ContentRendered(object sender, EventArgs e)
         {
             RefreshNavigationButtons();
+
+            SwitchProjectSaveButtonVisibility();
+        }
+
+        private void SwitchProjectSaveButtonVisibility()
+        {
+            if (ModManager.CurrentMod == null)
+            {
+                SaveProjectButton.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                SaveProjectButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SaveProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            ModManager.SaveCurrentMod();
         }
     }
 }

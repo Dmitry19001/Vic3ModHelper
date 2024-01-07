@@ -33,6 +33,8 @@ namespace Vic3ModManager
             MusicAlbums = new List<MusicAlbum>(musicAlbums ?? Array.Empty<MusicAlbum>());
         }
 
+        public string ModStructureIteration { get; } = "1";
+
         public string Name
         {
             get => name;
@@ -48,7 +50,12 @@ namespace Vic3ModManager
         }
         public List<MusicAlbum> MusicAlbums {
             get => musicAlbums;
-            private set => musicAlbums = value;
+            set => musicAlbums = value;
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {Name}, Description: {Description}, Version: {Version}";
         }
     }
 }
