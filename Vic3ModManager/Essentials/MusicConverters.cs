@@ -1,19 +1,60 @@
-﻿//using NAudio.Wave;
-//using NAudio.Vorbis;
-//using NVorbis;
+﻿using FFMpegCore;
+using FFMpegCore.Arguments;
+using FFMpegCore.Enums;
+using System.Diagnostics;
+using System.Windows;
+using TagLib.Tiff.Pef;
 
-//public static class AudioConverter
-//{
-//    public static void ConvertMp3ToOgg(string mp3FilePath, string oggFilePath)
-//    {
-//        using var reader = new Mp3FileReader(mp3FilePath);
-//        using var writer = new VorbisWaveWriter(oggFilePath, reader.WaveFormat.Channels, reader.WaveFormat.SampleRate);
-//        byte[] buffer = new byte[reader.WaveFormat.SampleRate * reader.WaveFormat.Channels * 4]; // 4 bytes per sample (16-bit stereo)
-//        int bytesRead;
-//        while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
-//        {
-//            writer.Write(buffer, 0, bytesRead);
-//        }
-//    }
 
-//}
+public class AudioConverter
+{
+    private bool ffmpegFound;
+
+    public AudioConverter()
+    {
+        ffmpegFound = false;
+    }
+
+    public bool FindFFMpeg()
+    {
+        ffmpegFound = System.IO.File.Exists("./ffmpeg/ffmpeg.exe");
+        if (ffmpegFound) {
+            GlobalFFOptions.Configure(new FFOptions { BinaryFolder = "./ffmpeg", TemporaryFilesFolder = "./tmp" });
+            MessageBox.Show("FFMpeg found"); 
+        }
+        else {
+            //trying again with slight different path
+            ffmpegFound = System.IO.File.Exists("./ffmpeg/bin/ffmpeg.exe");
+
+            if (ffmpegFound)
+            {
+                GlobalFFOptions.Configure(new FFOptions { BinaryFolder = "./ffmpeg/bin", TemporaryFilesFolder = "./tmp" });
+                MessageBox.Show("FFMpeg found");
+            }
+            else
+            {
+                MessageBox.Show("FFMpeg not found");
+            }
+
+        }
+        return ffmpegFound;
+    }
+
+
+    public void ConvertToOgg(string sourcePath, string destinationPath)
+    {
+        if (!ffmpegFound)
+        {
+            Debug.WriteLine("FFMpeg not found");
+            return;
+        }
+
+        FFMpegArguments.FromFileInput(sourcePath)
+            .OutputToFile(destinationPath, true, options => options
+                .WithAudioCodec(AudioCodec.LibVorbis)
+                .WithoutMetadata()
+                .WithCustomArgument("-vn")
+            ).ProcessSynchronously();
+    }
+
+}

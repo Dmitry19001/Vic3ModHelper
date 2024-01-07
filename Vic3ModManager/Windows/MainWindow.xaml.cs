@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Vic3ModManager
 {
@@ -34,6 +26,13 @@ namespace Vic3ModManager
                 ModManager.SwitchMod(ModManager.AllMods[0]);
             }
 
+            InitializePages();
+
+            Closing += MainWindow_Closing;
+        }
+
+        private void InitializePages()
+        {
             pages.Add("Home", () => new HomePage());
             pages.Add("Music Manager", () => new MusicManagerPage());
             pages.Add("Export", () => new ExportPage());
@@ -41,6 +40,11 @@ namespace Vic3ModManager
             GenerateNavigationButtons();
 
             ChangePage("Home");
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            AppConfig.Instance.Save();
         }
 
         private void GenerateNavigationButtons()
@@ -98,6 +102,12 @@ namespace Vic3ModManager
 
         public void ChangePage(string key)
         {
+            // Cleanup the previous page
+            if (ContentFrame.Content is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
             ContentFrame.Content = pages[key](); // Create a new instance
             currentPage = GetPageIndex(key);
         }

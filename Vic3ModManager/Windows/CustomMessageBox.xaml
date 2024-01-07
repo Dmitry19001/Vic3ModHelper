@@ -1,0 +1,34 @@
+﻿<Window x:Class="Vic3ModManager.Windows.CustomMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Vic3ModManager.Windows"
+        mc:Ignorable="d"
+        Title="{Binding HeaderText}" Height="200" Width="550" 
+        Foreground="White"
+        ResizeMode="CanMinimize">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FF303030"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Background="#FF404040">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Message}" TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Padding="10" Grid.Row="0"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10" Grid.Row="1">
+            <Button Content="Yes, Don't Ask Anymore" Click="YesDontAsk_Click" Margin="5"/>
+            <Button Content="Yes" Click="Yes_Click" Margin="5"/>
+            <Button Content="Continue Without Conversion" Click="ContinueWithout_Click" Margin="5"/>
+            <Button Content="Cancel Export" Click="CancelExport_Click" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
