@@ -15,7 +15,11 @@ Currently is a simple tool that creates music mods Victoria 3.
 * Project saving system (Not started yet)
 * Multiple mod managment (Not started yet)
 * Exporting UI progression (Currently only message on done)
+* Settings page (Not started yet)
+* Multiple language support (Not started yet)
+* FFMPEG-executable auto-download (Not started yet)
 * HOW TO USE Tutorial (Not started yet)
+* UI rework (WIP)
 
 ### Long-term plans or brainstorm
 * Agitator manager
