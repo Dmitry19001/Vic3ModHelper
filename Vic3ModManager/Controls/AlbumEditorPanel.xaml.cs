@@ -87,8 +87,7 @@ namespace Vic3ModManager
             currentAlbum.Title = AlbumTitleInput.Text;
             //currentAlbum.Id = AlbumIdInput.Text;
 
-            string id = StringHelpers.ReplaceSpaces(AlbumTitleInput.Text);
-            id = StringHelpers.TransliterateCyrillicToLatin(id);
+            string id = StringHelpers.FormatString(AlbumTitleInput.Text);
             currentAlbum.Id = id;
 
             //Debug.WriteLine($"Refreshed MusicAlbum: {currentAlbum}");
@@ -125,10 +124,9 @@ namespace Vic3ModManager
                 foreach (string filePath in filePaths)
                 {
                     string fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
-                    // removing spaces from file name
-                    fileName = StringHelpers.ReplaceSpaces(fileName);
-                    // replacing non-latin characters from file name
-                    fileName = StringHelpers.TransliterateCyrillicToLatin(fileName);
+
+                    fileName = StringHelpers.FormatString(fileName);
+
                     // getting song duration from file
                     TagLib.File file = TagLib.File.Create(filePath);
                     int duration = (int)file.Properties.Duration.TotalSeconds;

@@ -6,7 +6,7 @@ namespace Vic3ModManager.Essentials
 {
     internal static class StringHelpers
     {
-        private static readonly Dictionary<char, string> CyrillicToLatinMap = new Dictionary<char, string>
+        private static readonly Dictionary<char, string> CyrillicToLatinMap = new()
         {
             // Uppercase letters
             {'А', "A"}, {'Б', "B"}, {'В', "V"}, {'Г', "G"}, {'Д', "D"},
@@ -26,6 +26,17 @@ namespace Vic3ModManager.Essentials
             {'ш', "sh"}, {'щ', "shch"}, {'ъ', "ie"}, {'ы', "y"}, {'ь', ""},
             {'э', "e"}, {'ю', "yu"}, {'я', "ya"}
         };
+
+        public static string FormatString(string input)
+        {
+            input = TransliterateCyrillicToLatin(input);
+            input = ReplaceSpaces(input);
+
+            // remove all non letters, numbers and underscores
+            input = new string(input.Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
+
+            return input;
+        }
 
         public static string ReplaceSpaces(string input)
         {

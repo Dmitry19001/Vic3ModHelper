@@ -48,7 +48,7 @@ namespace Vic3ModManager
         {
             exportIsCanceled = false;
 
-            ModExporter modExporter = new ModExporter(ExportPathTextBox.Text);
+            ModExporter modExporter = new(ExportPathTextBox.Text);
 
             // Currently only music mod is generated
 
@@ -63,7 +63,7 @@ namespace Vic3ModManager
                 modExporter.CreateMusicPlayerCategoriesFile();
 
                 // Copy the music files dir {mod}/music/{album}/{song_name}.ogg
-                bool isConversionAllowed = IsMusicConversionAllowed(modExporter);
+                bool isConversionAllowed = IsMusicConversionAllowed(modExporter.musicNeedsConversion);
 
                 if (exportIsCanceled) {
                     modExporter.DeleteModFolder();
@@ -85,9 +85,9 @@ namespace Vic3ModManager
             }
         }
 
-        private bool IsMusicConversionAllowed(ModExporter modExporter)
+        private bool IsMusicConversionAllowed(bool musicNeedsConversion)
         {
-            if (modExporter.musicNeedsConversion && AppConfig.Instance.AskForConversionConfirm)
+            if (musicNeedsConversion && AppConfig.Instance.AskForConversionConfirm)
             {
                 var customMessageBox = new CustomMessageBox("External .exe needed",
                                             "Warning! Some music needs conversion to .ogg. "

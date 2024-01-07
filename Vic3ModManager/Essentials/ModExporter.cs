@@ -46,15 +46,13 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.ReplaceSpaces(album.Title);
-                albumTitle = StringHelpers.TransliterateCyrillicToLatin(albumTitle);
+                string albumTitle = StringHelpers.FormatString(album.Title);
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.ReplaceSpaces(song.Title);
-                    songName = StringHelpers.TransliterateCyrillicToLatin(songName);
+                    string songName = StringHelpers.FormatString(song.Title);
 
-                    string destinationPath = System.IO.Path.Combine(modDirectory, "music", albumTitle, $"{songName}.ogg");
+                    string destinationPath = Path.Combine(modDirectory, "music", albumTitle, $"{songName}.ogg");
 
                     if (Path.GetExtension(song.OriginalPath) != ".ogg")
                     {
@@ -81,8 +79,7 @@ namespace Vic3ModManager.Essentials
                     continue;
                 }
 
-                string albumId = StringHelpers.ReplaceSpaces(album.Id);
-                albumId = StringHelpers.TransliterateCyrillicToLatin(albumId);
+                string albumId = StringHelpers.FormatString(album.Id);
 
                 string destinationPath = Path.Combine(modDirectory, "gfx", "interface", "illustrations", "music_player", $"{albumId}.dds");
 
@@ -111,22 +108,20 @@ namespace Vic3ModManager.Essentials
             //     mood = {song_mood? yes : no}
             // }
 
-            string fileName = $"{StringHelpers.ReplaceSpaces(ModManager.CurrentMod.Name)}_music.txt";
-            string filePath = System.IO.Path.Combine(modDirectory, "music", fileName);
+            string fileName = $"{StringHelpers.FormatString(ModManager.CurrentMod.Name)}_music.txt";
+            string filePath = Path.Combine(modDirectory, "music", fileName);
 
             StringBuilder stringBuilder = new StringBuilder();
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.ReplaceSpaces(album.Title);
-                albumTitle = StringHelpers.TransliterateCyrillicToLatin(albumTitle);
+                string albumTitle = StringHelpers.FormatString(album.Title);
 
                 stringBuilder.AppendLine($"\n##### {albumTitle}");
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.ReplaceSpaces(song.Title);
-                    songName = StringHelpers.TransliterateCyrillicToLatin(songName);
+                    string songName = StringHelpers.FormatString(song.Title);
 
                     stringBuilder.AppendLine($"{songName} = {{");
                     stringBuilder.AppendLine($"    music = \"file:/music/{albumTitle}/{songName}.ogg\"");
@@ -158,15 +153,14 @@ namespace Vic3ModManager.Essentials
             // }
             // repeat for each album
 
-            string fileName = $"{StringHelpers.ReplaceSpaces(ModManager.CurrentMod.Name)}_categories.txt";
+            string fileName = $"{StringHelpers.FormatString(ModManager.CurrentMod.Name)}_categories.txt";
             string filePath = Path.Combine(modDirectory, "music", "music_player_categories", fileName);
 
             StringBuilder stringBuilder = new StringBuilder();
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.ReplaceSpaces(album.Title);
-                albumTitle = StringHelpers.TransliterateCyrillicToLatin(albumTitle);
+                string albumTitle = StringHelpers.FormatString(album.Title);
 
                 stringBuilder.AppendLine($"category = {{");
                 stringBuilder.AppendLine($"    id = \"{album.Id}\"");
@@ -175,8 +169,7 @@ namespace Vic3ModManager.Essentials
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.ReplaceSpaces(song.Title);
-                    songName = StringHelpers.TransliterateCyrillicToLatin(songName);
+                    string songName = StringHelpers.FormatString(song.Title);
 
                     stringBuilder.AppendLine($"        \"{songName}\"");
                 }
@@ -214,8 +207,7 @@ namespace Vic3ModManager.Essentials
         public void CreateDirectories()
         {
             // Create the mod directory
-            string modFolderName = StringHelpers.ReplaceSpaces(ModManager.CurrentMod.Name);
-            modFolderName = StringHelpers.TransliterateCyrillicToLatin(modFolderName);
+            string modFolderName = StringHelpers.FormatString(ModManager.CurrentMod.Name);
 
             modDirectory = Path.Combine(modDirectory, modFolderName);
             Directory.CreateDirectory(modDirectory);
@@ -238,8 +230,7 @@ namespace Vic3ModManager.Essentials
             {
                 MusicAlbum album = ModManager.CurrentMod.MusicAlbums[x];
 
-                string albumTitle = StringHelpers.ReplaceSpaces(album.Title);
-                albumTitle = StringHelpers.TransliterateCyrillicToLatin(albumTitle);
+                string albumTitle = StringHelpers.FormatString(album.Title);
 
                 directories.Add($"music/{albumTitle}");
             }
