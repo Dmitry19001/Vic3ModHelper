@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Vic3ModManager;
+using Vic3ModManager.Essentials;
 
 namespace Vic3ModManager
 {
@@ -91,7 +92,7 @@ namespace Vic3ModManager
 
             if(ValidateForm())
             {
-                Mod mod = new Mod(ModName.Text, ModDescription.Text, ModVersion.Text);
+                Mod mod = new(ModName.Text, ModDescription.Text, ModVersion.Text);
                 MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
                 //// TODO: Multiple Mod support after saving system 
                 //// Currently clearing all mods list and adding new one
@@ -123,6 +124,23 @@ namespace Vic3ModManager
         {
             ModManager.LoadMod(PreviousModsList.SelectedItem.ToString());
             ShowCurrentModData();
+        }
+
+        private void BrowseProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+            {
+                Filter = "Json file (*.json)|*.json"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // getting song name from file
+                string filePath = openFileDialog.FileName;
+
+                ModManager.LoadMod(filePath, true);
+                ShowCurrentModData();
+            }
         }
     }
 }

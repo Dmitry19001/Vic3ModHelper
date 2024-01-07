@@ -55,31 +55,30 @@ namespace Vic3ModManager
 
             string fileName = StringHelpers.FormatString(CurrentMod.Name);
 
-            TextWriter textWriter = new StreamWriter($"./Mods/{fileName}.json");
-            JsonSerializer jsonSerializer = new();
-
-            jsonSerializer.Serialize(textWriter, CurrentMod, typeof(Mod));
-            //File.WriteAllText($"./Mods/{fileName}.json", currentModJson, Encoding.UTF8);
+            string json = JsonConvert.SerializeObject(CurrentMod);
+            File.WriteAllText($"./Mods/{fileName}.json", json, Encoding.UTF8);
         }
 
-        public static void LoadMod(string fileName)
+        public static void LoadMod(string file, bool isExternalFile = false)
         {
-            string filePath = Path.Combine("./Mods", $"{fileName}.json");
-            JsonReader jsonReader = new JsonTextReader(new StreamReader(filePath));
-
-            JsonSerializer jsonSerializer = new JsonSerializer();
-
-            Mod loadedMod = jsonSerializer.Deserialize<Mod>(jsonReader);
-
-            if (loadedMod != null)
+            try
             {
-                AddMod(loadedMod);
-                SwitchMod(loadedMod);
-            }
-            else
-            {
-                MessageBox.Show("Unable to load mod project, file is possibly corrupted!");
-            }
+                string filePath = isExternalFile? file : Path.Combine("./Mods", $"{file}.json");
+                string fileContent = File.ReadAllText(filePath);
+
+                Mod loadedMod = JsonConvert.DeserializeObject<Mod>(fileContent);
+
+                if (loadedMod != null)
+                {
+                    AddMod(loadedMod);
+                    SwitchMod(loadedMod);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to load mod project, file is possibly corrupted!");
+                }
+            } catch { MessageBox.Show("Unable to load mod project, file is possibly corrupted!"); }
+
         }   
 
         public static Mod? CurrentMod { get; private set; }

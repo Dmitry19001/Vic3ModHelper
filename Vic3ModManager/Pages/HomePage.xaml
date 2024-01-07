@@ -9,6 +9,13 @@
       Title="HomePage"
       Foreground="White">
 
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FF313131"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
+        </Style>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -68,7 +75,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Or load your previous project" TextAlignment="Center" Grid.Row="0" Margin="0,10"/>
                 <ListBox x:Name="PreviousModsList" Foreground="White" Background="Transparent" Grid.Row="1"/>
-                <Button x:Name="LoadProjectButton" Grid.Row="2" Content="Load" VerticalAlignment="Top" Click="LoadProjectButton_Click"/>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="LoadProjectButton" Grid.Column="0" Content="Load" VerticalAlignment="Top" Click="LoadProjectButton_Click"/>
+                    <Button x:Name="BrowseProjectButton" Grid.Column="1" Content="Load from..." VerticalAlignment="Top" Click="BrowseProjectButton_Click"/>
+                </Grid>
             </Grid>
         </Grid>
         
