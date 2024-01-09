@@ -28,9 +28,9 @@
         </Style>
         <Style x:Key="TextBlockStyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="10, 5"/>
-            <Setter Property="Padding" Value="3,1"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Background" Value="#D8000000"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
@@ -41,13 +41,19 @@
             <ImageBrush ImageSource="{Binding AlbumImage, ElementName=musicAlbumControl}" Stretch="UniformToFill" TileMode="None" Opacity="0.61"/>
         </Border.Background>
         <Grid>
-            <Border Style="{StaticResource DeleteButtonBorderStyle}" CornerRadius="100" MaxHeight="30" MaxWidth="30" VerticalAlignment="Top"  HorizontalAlignment="Right" Padding="2" Margin="-1">
-                <Image x:Name="AlbumDeleteButton" Cursor="Hand" ToolTip="Delete"  MouseDown="DeleteAlbumButton_MouseDown" Source="/Icons/recycle-bin.png"/>
-            </Border>
-            <StackPanel Orientation="Vertical" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0">
                 <TextBlock Text="{Binding Title, ElementName=musicAlbumControl}" Style="{StaticResource TextBlockStyle}"/>
                 <TextBlock Text="{Binding AdditionalInfo, ElementName=musicAlbumControl}" Style="{StaticResource TextBlockStyle}"/>
             </StackPanel>
+
+            <Border Grid.Column="1" Style="{StaticResource DeleteButtonBorderStyle}" CornerRadius="10" MaxHeight="30" MaxWidth="30" VerticalAlignment="Top"  HorizontalAlignment="Right" Padding="3">
+                <Image x:Name="AlbumDeleteButton" Cursor="Hand" ToolTip="Delete"  MouseDown="DeleteAlbumButton_MouseDown" Source="/Icons/recycle-bin.png"/>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

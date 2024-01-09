@@ -11,6 +11,8 @@ namespace Vic3ModManager
 {
     public static class ModManager
     {
+        public static EventHandler OnModSwitched;
+
         public static void AddMod(Mod mod)
         {
             AllMods.Add(mod);
@@ -26,6 +28,7 @@ namespace Vic3ModManager
             if (AllMods.Contains(mod))
             {
                 CurrentMod = mod;
+                OnModSwitched?.Invoke(null, null);
             }
         }
 
@@ -48,19 +51,55 @@ namespace Vic3ModManager
 
         public static void SaveCurrentMod()
         {
+            SaveMod(CurrentMod);
+        }
+
+        public static void UpdateCurrentMod(string name, string description, string version)
+        {
+            if (CurrentMod == null) return;
+
+            string oldName = CurrentMod.Name;
+
+            CurrentMod.Name = name;
+            CurrentMod.Description = description;
+            CurrentMod.Version = version;
+
+            if (oldName != name)
+            {
+                string oldFileName = StringHelpers.FormatString(oldName);
+                string oldFilePath = Path.Combine("./Mods", $"{oldFileName}.json");
+
+                if (File.Exists(oldFilePath))
+                {
+                    File.Delete(oldFilePath);
+                }
+            }
+
+            SaveCurrentMod();
+        }
+
+        private static void SaveMod(Mod mod)
+        {
             if (!Directory.Exists("./Mods"))
             {
                 Directory.CreateDirectory("./Mods");
             }
 
-            string fileName = StringHelpers.FormatString(CurrentMod.Name);
+            string fileName = StringHelpers.FormatString(mod.Name);
 
-            string json = JsonConvert.SerializeObject(CurrentMod);
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            string json = JsonConvert.SerializeObject(mod, settings);
             File.WriteAllText($"./Mods/{fileName}.json", json, Encoding.UTF8);
         }
 
-        public static void LoadMod(string file, bool isExternalFile = false)
+        public static bool LoadMod(string file, bool isExternalFile = false)
         {
+            bool success = false;
             try
             {
                 string filePath = isExternalFile? file : Path.Combine("./Mods", $"{file}.json");
@@ -70,20 +109,39 @@ namespace Vic3ModManager
 
                 if (loadedMod != null)
                 {
+                    if (loadedMod.ModStructureIteration != Mod.MOD_STUCTURE_ITERATION)
+                    {
+                        File.Copy(filePath, filePath.Replace(".json", $"_backup{DateTime.Now:ddMMyyhhmm}.json"));
+
+                        loadedMod = MigrateToCurrentVersion(loadedMod);
+
+                        SaveMod(loadedMod);
+                    }
+
                     AddMod(loadedMod);
                     SwitchMod(loadedMod);
+                    success = true;
                 }
-                else
-                {
-                    MessageBox.Show("Unable to load mod project, file is possibly corrupted!");
-                }
-            } catch { MessageBox.Show("Unable to load mod project, file is possibly corrupted!"); }
+            }
+            catch (JsonSerializationException ex)
+            {
+                MessageBox.Show($"JSON Serialization Exception: {ex.Message}");
+            }
+            catch (Exception ex) { MessageBox.Show($"Unable to load mod project, file is possibly corrupted! Error: {ex.Message}"); }
 
+            return success;
         }   
 
         public static Mod? CurrentMod { get; private set; }
 
         public static List<Mod> AllMods { get; private set; } = new();
+
+        public static Mod MigrateToCurrentVersion(Mod oldMod)
+        {
+            new NotImplementedException();
+            return new Mod("test", "test", "test");
+        }
+
     }
 
 }

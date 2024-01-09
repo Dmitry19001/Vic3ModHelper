@@ -87,6 +87,8 @@ namespace Vic3ModManager
 
         private bool IsMusicConversionAllowed(bool musicNeedsConversion)
         {
+            // TODO: Ask user to download ffmpeg if not found
+            // TODO: Options for download: Auto or Manual (if user don't trust author approach)
             if (musicNeedsConversion && AppConfig.Instance.AskForConversionConfirm)
             {
                 var customMessageBox = new CustomMessageBox("External .exe needed",

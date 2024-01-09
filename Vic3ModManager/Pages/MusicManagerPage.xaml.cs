@@ -1,18 +1,17 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using Vic3ModManager.Essentials;
 
 namespace Vic3ModManager
 {
     /// <summary>
     /// Interaction logic for MusicManager.xaml
     /// </summary>
+
+
+    // Whole class needs to be refactored
+
+
     public partial class MusicManagerPage : Page
     {
         private MusicAlbum? currentAlbum = null;
@@ -47,9 +46,9 @@ namespace Vic3ModManager
             }
         }
 
-        private void AddAlbumButton_Click(object sender, RoutedEventArgs e)
+        private void AddNewAlbum()
         {
-            var newAlbum = new MusicAlbum("untitled", "untitled", null, "");
+            MusicAlbum newAlbum = new();
             ModManager.CurrentMod.MusicAlbums.Add(newAlbum);
             currentAlbumControl = AddMusicAlbumControl(newAlbum);
 
@@ -80,14 +79,14 @@ namespace Vic3ModManager
         private void OpenAlbumEditPanel(MusicAlbum musicAlbum)
         {
             currentAlbumEditorPanel = new AlbumEditorPanel(musicAlbum);
-            currentAlbumEditorPanel.OnDataUpdated += UpdateData;
+            currentAlbumEditorPanel.OnDataUpdated += OnDataUpdated;
 
             AlbumEditorFrame.Navigate(currentAlbumEditorPanel);
         }
 
         private void CloseAlbumEditPanel(bool forceRenavigate)
         {
-            currentAlbumEditorPanel.OnDataUpdated -= UpdateData;
+            currentAlbumEditorPanel.OnDataUpdated -= OnDataUpdated;
 
             if (!forceRenavigate) return; 
 
@@ -105,16 +104,6 @@ namespace Vic3ModManager
             
         }
 
-        private void UpdateData(object sender, RoutedEventArgs e)
-        {
-            currentAlbumControl.Title = $"{currentAlbum.Title}";
-            currentAlbumControl.AdditionalInfo = $"Songs: {currentAlbum.Songs.Count}";
-            if (!string.IsNullOrEmpty(currentAlbum.CoverImagePath))
-            {
-                currentAlbumControl.AlbumImagePath = currentAlbum.CoverImagePath;
-            }
-        }
-
         private void UpdateUI()
         {
             if (ModManager.CurrentMod is null) return;
@@ -130,35 +119,14 @@ namespace Vic3ModManager
             }
         }
 
-        private void AlbumPanelOnClick(object sender, RoutedEventArgs e)
+        private void DeleteAlbum(int albumIndex)
         {
-            int albumIndex = AlbumsContainer.Children.IndexOf((UIElement)sender) - 1;
-            if (albumIndex >= 0)
-            {
-                currentAlbumControl = (MusicAlbumControl)sender;
-                currentAlbum = ModManager.CurrentMod.MusicAlbums[albumIndex];
-                
-                Debug.WriteLine($"Album {currentAlbum.Title} selected with ID: {currentAlbum.Id}");
+            ModManager.CurrentMod.MusicAlbums.RemoveAt(albumIndex);
+            AlbumsContainer.Children.RemoveAt(albumIndex + 1);
 
-                CloseAlbumEditPanel(false);
-                OpenAlbumEditPanel(currentAlbum);
+            CloseAlbumEditPanel(true);
 
-                RefreshAlbumPanelStates();
-            }
-        }
-
-        private void AlbumPanelOnDeleteClick(object sender, RoutedEventArgs e)
-        {
-            int albumIndex = AlbumsContainer.Children.IndexOf((UIElement)sender) - 1;
-            if (albumIndex >= 0)
-            {
-                ModManager.CurrentMod.MusicAlbums.RemoveAt(albumIndex);
-                AlbumsContainer.Children.RemoveAt(albumIndex + 1);
-
-                CloseAlbumEditPanel(true);
-
-                RefreshAlbumPanelStates();
-            }
+            RefreshAlbumPanelStates();
         }
 
         private void RefreshAlbumPanelStates()
@@ -173,6 +141,46 @@ namespace Vic3ModManager
             }
 
             UpdateUI();
+        }
+
+
+        private void OnDataUpdated(object sender, RoutedEventArgs e)
+        {
+            currentAlbumControl.Title = $"{currentAlbum.Title}";
+            currentAlbumControl.AdditionalInfo = $"Songs: {currentAlbum.Songs.Count}";
+            if (!string.IsNullOrEmpty(currentAlbum.CoverImagePath))
+            {
+                currentAlbumControl.AlbumImagePath = currentAlbum.CoverImagePath;
+            }
+        }
+
+        private void AddAlbumButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddNewAlbum();
+        }
+
+        private void AlbumPanelOnClick(object sender, RoutedEventArgs e)
+        {
+            int albumIndex = AlbumsContainer.Children.IndexOf((UIElement)sender) - 1;
+            if (albumIndex >= 0)
+            {
+                currentAlbumControl = (MusicAlbumControl)sender;
+                currentAlbum = ModManager.CurrentMod.MusicAlbums[albumIndex];
+
+                CloseAlbumEditPanel(false);
+                OpenAlbumEditPanel(currentAlbum);
+
+                RefreshAlbumPanelStates();
+            }
+        }
+
+        private void AlbumPanelOnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            int albumIndex = AlbumsContainer.Children.IndexOf((UIElement)sender) - 1;
+            if (albumIndex >= 0)
+            {
+                DeleteAlbum(albumIndex);
+            }
         }
     }
 }

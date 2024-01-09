@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Windows;
-using Vic3ModManager.Windows;
 
 
 namespace Vic3ModManager.Essentials
@@ -46,11 +44,11 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     string destinationPath = Path.Combine(modDirectory, "music", albumTitle, $"{songName}.ogg");
 
@@ -90,7 +88,7 @@ namespace Vic3ModManager.Essentials
                     continue;
                 }
 
-                System.IO.File.Copy(album.CoverImagePath, destinationPath, true);
+                File.Copy(album.CoverImagePath, destinationPath, true);
             }
         }
 
@@ -115,13 +113,13 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 stringBuilder.AppendLine($"\n##### {albumTitle}");
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     stringBuilder.AppendLine($"{songName} = {{");
                     stringBuilder.AppendLine($"    music = \"file:/music/{albumTitle}/{songName}.ogg\"");
@@ -160,7 +158,7 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 stringBuilder.AppendLine($"category = {{");
                 stringBuilder.AppendLine($"    id = \"{album.Id}\"");
@@ -169,7 +167,7 @@ namespace Vic3ModManager.Essentials
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     stringBuilder.AppendLine($"        \"{songName}\"");
                 }
@@ -230,7 +228,7 @@ namespace Vic3ModManager.Essentials
             {
                 MusicAlbum album = ModManager.CurrentMod.MusicAlbums[x];
 
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 directories.Add($"music/{albumTitle}");
             }

@@ -33,11 +33,15 @@ namespace Vic3ModManager
 
         private void ShowCurrentModData()
         {
+            UpdateModDataButton.Visibility = Visibility.Collapsed;
+
             if (ModManager.CurrentMod != null)
             {
                 ModName.Text = ModManager.CurrentMod.Name;
                 ModDescription.Text = ModManager.CurrentMod.Description;
                 ModVersion.Text = ModManager.CurrentMod.Version;
+
+                UpdateModDataButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -87,32 +91,27 @@ namespace Vic3ModManager
             return result;
         }
 
-        private void ContinueButton_Click(object sender, RoutedEventArgs e)
-        {
 
-            if(ValidateForm())
+        private void ProcessNewMod()
+        {
+            if (ValidateForm())
             {
                 Mod mod = new(ModName.Text, ModDescription.Text, ModVersion.Text);
-                MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
-                //// TODO: Multiple Mod support after saving system 
-                //// Currently clearing all mods list and adding new one
 
                 if (ModManager.CurrentMod != null && ModManager.CurrentMod.Name == mod.Name)
                 {
                     var result = MessageBox.Show("Current action will rewrite current mod data.", "Warning", MessageBoxButton.OKCancel);
-                    if (result == MessageBoxResult.Cancel) 
+                    if (result == MessageBoxResult.Cancel)
                     {
-                        mainWindow.ChangePage("Music Manager");
+                        GotoMusicManagerPage();
                         return;
                     }
                 }
 
-                ModManager.AllMods.Clear();
                 ModManager.AddMod(mod);
-                ModManager.SwitchMod(mod);
+                ModManager.SwitchMod(ModManager.AllMods.Last());
 
-
-                mainWindow.ChangePage("Music Manager");
+                GotoMusicManagerPage();
             }
             else
             {
@@ -120,10 +119,37 @@ namespace Vic3ModManager
             }
         }
 
+        private void GotoMusicManagerPage()
+        {
+            MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.ChangePage("Music Manager");
+        }
+
+
+        private void UpdateCurrentModData()
+        {
+            if (ValidateForm())
+            {
+                ModManager.UpdateCurrentMod(ModName.Text, ModDescription.Text, ModVersion.Text);
+
+                MessageBox.Show("Mod data updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Please fill all the fields correctly", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ContinueButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessNewMod();
+        }
+
         private void LoadProjectButton_Click(object sender, RoutedEventArgs e)
         {
-            ModManager.LoadMod(PreviousModsList.SelectedItem.ToString());
-            ShowCurrentModData();
+            bool success = ModManager.LoadMod(PreviousModsList.SelectedItem.ToString());
+
+            if (success) GotoMusicManagerPage();
         }
 
         private void BrowseProjectButton_Click(object sender, RoutedEventArgs e)
@@ -138,9 +164,14 @@ namespace Vic3ModManager
                 // getting song name from file
                 string filePath = openFileDialog.FileName;
 
-                ModManager.LoadMod(filePath, true);
-                ShowCurrentModData();
+                bool success = ModManager.LoadMod(filePath, true);
+                if (success) GotoMusicManagerPage();
             }
+        }
+
+        private void UpdateModDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateCurrentModData();
         }
     }
 }

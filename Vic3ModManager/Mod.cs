@@ -10,8 +10,12 @@ namespace Vic3ModManager
     /// <summary>
     /// Represents a mod.
     /// </summary>
+
+
     public class Mod
     {
+        public const string MOD_STUCTURE_ITERATION = "2";
+
         private string name;
         private string description;
         private string version;
@@ -33,7 +37,7 @@ namespace Vic3ModManager
             MusicAlbums = new List<MusicAlbum>(musicAlbums ?? Array.Empty<MusicAlbum>());
         }
 
-        public string ModStructureIteration { get; } = "1";
+        public string ModStructureIteration { get; set; } = MOD_STUCTURE_ITERATION;
 
         public string Name
         {

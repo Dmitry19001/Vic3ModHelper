@@ -39,7 +39,7 @@ namespace Vic3ModManager
 
         private void LoadDataToUI()
         {
-            AlbumTitleInput.Text = currentAlbum.Title;
+            AlbumTitleInput.Text = currentAlbum.Title.Key;
             AlbumIdInput.Text = currentAlbum.Id;
 
             AlbumTitleInput.TextChanged += AlbumInput_TextChanged;
@@ -84,7 +84,7 @@ namespace Vic3ModManager
 
         private void RefreshAlbumClassData()
         {
-            currentAlbum.Title = AlbumTitleInput.Text;
+            currentAlbum.Title.Key = AlbumTitleInput.Text;
             //currentAlbum.Id = AlbumIdInput.Text;
 
             string id = StringHelpers.FormatString(AlbumTitleInput.Text);
@@ -131,7 +131,7 @@ namespace Vic3ModManager
                     TagLib.File file = TagLib.File.Create(filePath);
                     int duration = (int)file.Properties.Duration.TotalSeconds;
                     // adding song to current album
-                    currentAlbum.AddSong(new Song(fileName, filePath, duration));
+                    currentAlbum.AddSong(new Song(new LocalizableTextEntry(fileName), filePath, duration));
                     // adding song to UI
                     AddSongControl(currentAlbum.Songs.Last());
                 }
@@ -142,7 +142,7 @@ namespace Vic3ModManager
         private void AddSongControl(Song song)
         {
             string fileExtension = System.IO.Path.GetExtension(song.OriginalPath).Remove(0,1);
-            SongControl songControl = new(song.Title, song.DurationToString(), fileExtension);
+            SongControl songControl = new(song.Title.Key, song.DurationToString(), fileExtension);
 
             songControl.OnSongEdited += SongControl_OnSongEdited;
             songControl.DeleteButtonClick += SongDeleteOnClick;
@@ -165,7 +165,7 @@ namespace Vic3ModManager
                 // getting song from album
                 Song song = currentAlbum.Songs[songIndex];
                 // updating song name
-                song.Title = songControl.Title;
+                song.Title.Key = songControl.Title;
 
                 currentAlbum.Songs[songIndex] = song;
 

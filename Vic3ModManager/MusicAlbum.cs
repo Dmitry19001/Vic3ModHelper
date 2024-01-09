@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Vic3ModManager
@@ -10,7 +11,7 @@ namespace Vic3ModManager
     {
         // Fields
         private string id;
-        private string title;
+        private LocalizableTextEntry title;
         private List<Song> songs;
         private string coverImagePath;
 
@@ -20,12 +21,13 @@ namespace Vic3ModManager
         /// <param name="id">The unique identifier for the album.</param>
         /// <param name="title">The title of the album.</param>
         /// <param name="songs">An array of songs contained in the album.</param>
-        public MusicAlbum(string id, string title, Song[] songs, string coverImagePath)
+
+        public MusicAlbum(string id = "untitled", LocalizableTextEntry? title = null, Song[]? songs = null, string coverImagePath = "")
         {
             Id = id;
-            Title = title;
-            Songs = new List<Song>(songs ?? Array.Empty<Song>());
-            CoverImagePath = coverImagePath ?? "";
+            Title = title?? new LocalizableTextEntry("untitled");
+            Songs = new List<Song>(songs ?? []);
+            CoverImagePath = coverImagePath;
         }
 
         /// <summary>
@@ -63,9 +65,9 @@ namespace Vic3ModManager
         public string Id { get => id; set => id = value ?? string.Empty; }
 
         /// <summary>
-        /// Gets or sets the title of the album.
+        /// Gets or sets the localizable title of the album.
         /// </summary>
-        public string Title { get => title; set => title = value ?? string.Empty; }
+        public LocalizableTextEntry Title { get => title; set => title = value ?? new(string.Empty); }
 
         /// <summary>
         /// Gets the list of songs in the album.

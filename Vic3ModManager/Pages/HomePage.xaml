@@ -14,6 +14,7 @@
             <Setter Property="Background" Value="#FF313131"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
         </Style>
     </Page.Resources>
     <Grid>
@@ -66,7 +67,12 @@
                 <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModVersion" Placeholder="Mod version here..." />
             </Grid>
 
-            <Button Margin="0,5" Grid.Row="4" Grid.Column="1" Content="Continue" Click="ContinueButton_Click"/>
+            <WrapPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center">
+                <Button x:Name="UpdateModDataButton" Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Update mod data" HorizontalAlignment="Left" Padding="10, 5" Click="UpdateModDataButton_Click"/>
+                <Button Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Create new mod" HorizontalAlignment="Left" Padding="10, 5" Click="ContinueButton_Click"/>
+            </WrapPanel>
+
+            
             <Grid Grid.Row="5" Grid.Column="1" Margin="0,10,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace Vic3ModManager
 {
@@ -12,7 +13,7 @@ namespace Vic3ModManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Dictionary<string, Func<Page>> pages = new();
+        private readonly Dictionary<string, Func<Page>> pages = [];
         private int currentPage = 0;
 
         public MainWindow()
@@ -29,36 +30,77 @@ namespace Vic3ModManager
             InitializePages();
 
             Closing += MainWindow_Closing;
+            ModManager.OnModSwitched += ModManager_OnModSwitched;
+        }
+
+
+        private void UpdateTopBorderState()
+        {
+            bool hasMod = ModManager.CurrentMod != null;
+
+            AnimateTopBorder(hasMod);
+
+            if (hasMod)
+            {
+                ModChooserBlock.Text = ModManager.CurrentMod.Name;
+                TopBorder.ContextMenu = new ContextMenu();
+
+                if (ModManager.AllMods.Count > 1)
+                {
+                    foreach (var mod in ModManager.AllMods)
+                    {
+                        if (mod == ModManager.CurrentMod) continue;
+
+                        MenuItem menuItem = new();
+                        menuItem.Header = mod.Name;
+                        menuItem.Click += (object sender, RoutedEventArgs e) =>
+                        {
+                            SwtichToOtherMod(mod);
+                        };
+
+                        TopBorder.ContextMenu.Items.Add(menuItem);
+                    }
+                }
+            }
+            else
+            {
+                ModChooserBlock.Text = "";
+                TopBorder.ContextMenu = null;
+            }
+        }
+
+        private void SwtichToOtherMod(Mod mod)
+        {
+            var needSave = MessageBox.Show("Do you want save changes before switching?", "Save", MessageBoxButton.YesNo);
+
+            if (needSave == MessageBoxResult.Yes)
+            {
+                ModManager.SaveCurrentMod();
+            }
+
+            ModManager.SwitchMod(mod);
+            ReloadCurrentPage();
+        }
+
+        private void AnimateTopBorder(bool hasMod)
+        {
+            string storyboardName = hasMod ? "HasModAnimation" : "HasNoModAnimation";
+            if (FindResource(storyboardName) is Storyboard storyboard)
+            {
+                storyboard.Begin(TopBorder);
+            }
         }
 
         private void InitializePages()
         {
             pages.Add("Home", () => new HomePage());
             pages.Add("Music Manager", () => new MusicManagerPage());
+            pages.Add("Localization Manager", () => new LocalizationManager());
             pages.Add("Export", () => new ExportPage());
 
             GenerateNavigationButtons();
 
             ChangePage("Home");
-        }
-
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            AppConfig.Instance.Save();
-
-            if (ModManager.CurrentMod != null)
-            {
-                var result = MessageBox.Show("Do you want to save the current mod before exiting?", "Save mod?", MessageBoxButton.YesNoCancel);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    ModManager.SaveCurrentMod();
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
         }
 
         private void GenerateNavigationButtons()
@@ -71,14 +113,6 @@ namespace Vic3ModManager
                 navButton.Style = (Style)FindResource("NavigationButtonStyle");
                 Navigations.Children.Add(navButton);
             }
-        }
-
-        private void NavButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button? button = sender as Button;
-            string? pageKey = button?.Content.ToString();
-            
-            if ( pageKey!= null) ChangePage(pageKey);
         }
 
         private void RefreshNavigationButtons()
@@ -116,21 +150,13 @@ namespace Vic3ModManager
 
         public void ChangePage(string key)
         {
-            // Cleanup the previous page
-            if (ContentFrame.Content is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
             ContentFrame.Content = pages[key](); // Create a new instance
             currentPage = GetPageIndex(key);
         }
 
-        private void ContentFrame_ContentRendered(object sender, EventArgs e)
+        public void ReloadCurrentPage()
         {
-            RefreshNavigationButtons();
-
-            SwitchProjectSaveButtonVisibility();
+            ContentFrame.Content = pages[pages.Keys.ToList()[currentPage]](); // Create a new instance
         }
 
         private void SwitchProjectSaveButtonVisibility()
@@ -145,9 +171,49 @@ namespace Vic3ModManager
             }
         }
 
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            AppConfig.Instance.Save();
+
+            if (ModManager.CurrentMod != null)
+            {
+                var result = MessageBox.Show("Do you want to save the current mod before exiting?", "Save mod?", MessageBoxButton.YesNoCancel);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ModManager.SaveCurrentMod();
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void ContentFrame_ContentRendered(object sender, EventArgs e)
+        {
+            RefreshNavigationButtons();
+
+            SwitchProjectSaveButtonVisibility();
+        }
+
+        private void NavButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button? button = sender as Button;
+            string? pageKey = button?.Content.ToString();
+
+            if (pageKey != null) ChangePage(pageKey);
+        }
+
         private void SaveProjectButton_Click(object sender, RoutedEventArgs e)
         {
             ModManager.SaveCurrentMod();
+        }
+
+
+        private void ModManager_OnModSwitched(object sender, EventArgs e)
+        {
+            UpdateTopBorderState();
         }
     }
 }
