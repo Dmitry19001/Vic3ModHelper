@@ -9,11 +9,13 @@ Currently is a simple tool that creates music mods Victoria 3.
 * DDS cover images support (preview and export)
 * PNG, JPG cover images support (preview only and export)
 * MP3 to OGG conversion (FFMPEG support)
+* Project saving system
+
+### WORK IN PROGRESS
+* Multiple mod managment
+* Localization system
 
 ### Short-term plans
-* Localization system (Not started yet)
-* Project saving system (Not started yet)
-* Multiple mod managment (Not started yet)
 * Exporting UI progression (Currently only message on done)
 * Settings page (Not started yet)
 * Multiple language support (Not started yet)
