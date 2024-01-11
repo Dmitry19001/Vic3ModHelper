@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vic3ModManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="900" MinWidth="800">
+        Title="Vic3ModManager" Height="900" Width="900" MinWidth="800" Icon="/Windows/Vic3ModManagerIcon.png">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
@@ -28,6 +28,7 @@
             <Setter Property="IsEnabled" Value="False"/>
             <Setter Property="MinWidth" Value="100"/>
             <Setter Property="Height" Value="25"/>
+            <Setter Property="FontSize" Value="16"/>
         </Style>
         <Style x:Key="TopBorderStyle" TargetType="Border">
             <Setter Property="HorizontalAlignment" Value="Center"/>
