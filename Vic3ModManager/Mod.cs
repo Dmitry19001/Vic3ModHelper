@@ -14,12 +14,13 @@ namespace Vic3ModManager
 
     public class Mod
     {
-        public const string MOD_STUCTURE_ITERATION = "2";
+        public const string MOD_STUCTURE_ITERATION = "3";
 
         private string name;
         private string description;
         private string version;
         private List<MusicAlbum> musicAlbums;
+        private GameLanguages.DefaultLanguages defaultLanguage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mod"/> class.
@@ -29,12 +30,17 @@ namespace Vic3ModManager
         /// <param name="musicAlbums">The music albums of the mod.</param>
         /// <param name="version">The version of the mod.</param>
         
-        public Mod(string name, string description, string version, MusicAlbum[]? musicAlbums = null)
+        public Mod(string name,
+                   string description,
+                   string version,
+                   MusicAlbum[]? musicAlbums = null,
+                   GameLanguages.DefaultLanguages? defaultLanguage = null)
         {
             Name = name;
             Description = description;
             Version = version;
-            MusicAlbums = new List<MusicAlbum>(musicAlbums ?? Array.Empty<MusicAlbum>());
+            MusicAlbums = new List<MusicAlbum>(musicAlbums ?? []);
+            DefaultLanguage = defaultLanguage ?? GameLanguages.DefaultLanguages.English;
         }
 
         public string ModStructureIteration { get; set; } = MOD_STUCTURE_ITERATION;
@@ -55,6 +61,12 @@ namespace Vic3ModManager
         public List<MusicAlbum> MusicAlbums {
             get => musicAlbums;
             set => musicAlbums = value;
+        }
+
+        public GameLanguages.DefaultLanguages DefaultLanguage
+        {
+            get => defaultLanguage;
+            set => defaultLanguage = value;
         }
 
         public override string ToString()

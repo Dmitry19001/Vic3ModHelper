@@ -26,9 +26,25 @@ namespace Vic3ModManager
         {
             InitializeComponent();
 
+            InitializeDefaultLanguageComboBox();
+
             ShowCurrentModData();
 
             FindPreviousMods();
+        }
+
+        private void InitializeDefaultLanguageComboBox()
+        {
+            // Loading all GameLanguages.DefaultLanguages string values 
+            GameLanguages.DefaultLanguages[] languages = (GameLanguages.DefaultLanguages[])Enum.GetValues(typeof(GameLanguages.DefaultLanguages));
+
+            // Adding all GameLanguages.DefaultLanguages string values to the combobox
+            for (int i = 0; i < languages.Length; i++)
+            {
+                DefaultLangugeSelector.Items.Add(GameLanguages.ToString(languages[i]));
+            }
+
+            DefaultLangugeSelector.SelectedIndex = 1;
         }
 
         private void ShowCurrentModData()
@@ -40,6 +56,7 @@ namespace Vic3ModManager
                 ModName.Text = ModManager.CurrentMod.Name;
                 ModDescription.Text = ModManager.CurrentMod.Description;
                 ModVersion.Text = ModManager.CurrentMod.Version;
+                DefaultLangugeSelector.SelectedIndex = (int)ModManager.CurrentMod.DefaultLanguage;
 
                 UpdateModDataButton.Visibility = Visibility.Visible;
             }

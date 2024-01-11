@@ -16,7 +16,7 @@ namespace Vic3ModManager
     {
         private MusicAlbum? currentAlbum = null;
         private MusicAlbumControl? currentAlbumControl = null;
-        private AlbumEditorPanel? currentAlbumEditorPanel = null;
+        private AlbumEditorPanelControl? currentAlbumEditorPanelControl = null;
 
         public MusicManagerPage()
         {
@@ -78,15 +78,15 @@ namespace Vic3ModManager
 
         private void OpenAlbumEditPanel(MusicAlbum musicAlbum)
         {
-            currentAlbumEditorPanel = new AlbumEditorPanel(musicAlbum);
-            currentAlbumEditorPanel.OnDataUpdated += OnDataUpdated;
+            currentAlbumEditorPanelControl = new AlbumEditorPanelControl(musicAlbum);
+            currentAlbumEditorPanelControl.OnDataUpdated += OnDataUpdated;
 
-            AlbumEditorFrame.Navigate(currentAlbumEditorPanel);
+            AlbumEditorFrame.Navigate(currentAlbumEditorPanelControl);
         }
 
         private void CloseAlbumEditPanel(bool forceRenavigate)
         {
-            currentAlbumEditorPanel.OnDataUpdated -= OnDataUpdated;
+            currentAlbumEditorPanelControl.OnDataUpdated -= OnDataUpdated;
 
             if (!forceRenavigate) return; 
 
@@ -107,6 +107,13 @@ namespace Vic3ModManager
         private void UpdateUI()
         {
             if (ModManager.CurrentMod is null) return;
+
+            currentAlbumControl.Title = currentAlbum.Title.ToString();
+            currentAlbumControl.AdditionalInfo = $"Songs: {currentAlbum.Songs.Count}";
+            if (!string.IsNullOrEmpty(currentAlbum.CoverImagePath))
+            {
+                currentAlbumControl.AlbumImagePath = currentAlbum.CoverImagePath;
+            }
 
             // hiding Create new album label
             if (ModManager.CurrentMod.MusicAlbums.Count > 0)
@@ -146,12 +153,7 @@ namespace Vic3ModManager
 
         private void OnDataUpdated(object sender, RoutedEventArgs e)
         {
-            currentAlbumControl.Title = $"{currentAlbum.Title}";
-            currentAlbumControl.AdditionalInfo = $"Songs: {currentAlbum.Songs.Count}";
-            if (!string.IsNullOrEmpty(currentAlbum.CoverImagePath))
-            {
-                currentAlbumControl.AlbumImagePath = currentAlbum.CoverImagePath;
-            }
+            UpdateUI();
         }
 
         private void AddAlbumButton_Click(object sender, RoutedEventArgs e)

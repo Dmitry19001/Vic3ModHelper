@@ -17,35 +17,39 @@ namespace Vic3ModManager
         {
             InitializeComponent();
 
-            // Dynamically add language columns here
-            //AddLanguageColumns(new List<string> { "English" }); // Example languages
             LoadMusicData(); // Load your data here
-        }
-
-        private void AddLanguageColumns(List<string> languages)
-        {
-            if (ModManager.CurrentMod.MusicAlbums.Count < 1) return;
-
-            foreach (var language in languages)
-            {
-                var column = new DataGridTextColumn
-                {
-                    Header = language,
-                    Binding = new Binding($"Translations[{language}]")
-                };
-                //LocalizationDataGrid.Columns.Add(column);
-            }
         }
 
         private void LoadMusicData()
         {
-            // Load your data into the DataGrid
-            // Example: LocalizationDataGrid.ItemsSource = yourDataSource;
 
             if (ModManager.CurrentMod.MusicAlbums.Count < 1) return;
 
             List<LocalizableTextEntry> localizableTextEntries = new();
 
+            CreateLocalizationFileEntry();
+
+            for (int i = 0; i < ModManager.CurrentMod.MusicAlbums.Count; i++)
+            {
+                MusicAlbum musicAlbum = ModManager.CurrentMod.MusicAlbums[i];
+
+                localizableTextEntries.Add(musicAlbum.Title);
+
+                for (int j = 0; j < musicAlbum.Songs.Count; j++)
+                {
+                    Song song = musicAlbum.Songs[j];
+
+                    localizableTextEntries.Add(song.Title);
+                }
+            }
+
+            LocalizationEditor.LocalizationData = [.. localizableTextEntries];
+
+            //LocalizationDataGrid.ItemsSource = localizableTextEntries;
+        }
+
+        private void CreateLocalizationFileEntry()
+        {
             string modName = StringHelpers.FormatString(ModManager.CurrentMod.Name);
 
             TextBlock textBlock = new()
@@ -56,30 +60,6 @@ namespace Vic3ModManager
             };
 
             LocFilesPanel.Children.Add(textBlock);
-
-            for (int i = 0; i < ModManager.CurrentMod.MusicAlbums.Count; i++)
-            {
-                MusicAlbum musicAlbum = ModManager.CurrentMod.MusicAlbums[i];
-
-                if (!musicAlbum.Title.Translations.ContainsKey("English"))
-                    musicAlbum.Title.Translations.Add("English", $"{musicAlbum.Title.Key}");
-
-                localizableTextEntries.Add(musicAlbum.Title);
-
-                for (int j = 0; j < musicAlbum.Songs.Count; j++)
-                {
-                    Song song = musicAlbum.Songs[j];
-
-                    if (!song.Title.Translations.ContainsKey("English"))
-                        song.Title.Translations.Add("English", $"{song.Title.Key}");
-
-                    localizableTextEntries.Add(song.Title);
-                }
-            }
-
-            LocalizationEditor.LocalizationData = [.. localizableTextEntries];
-
-            //LocalizationDataGrid.ItemsSource = localizableTextEntries;
         }
 
         private void LocalizationDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)

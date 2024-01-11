@@ -7,7 +7,7 @@
         <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut"/>
         <Storyboard x:Key="FocusAnimation">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(TranslateTransform.Y)"
-                             To="-20" Duration="0:0:0.3" 
+                             To="-21" Duration="0:0:0.3" 
                              Storyboard.TargetName="PlaceholderLabel"
                              EasingFunction="{StaticResource EaseOut}"/>
             <DoubleAnimation Storyboard.TargetProperty="Opacity"

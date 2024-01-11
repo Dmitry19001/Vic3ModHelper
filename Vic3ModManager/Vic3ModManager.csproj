@@ -10,11 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Windows\Vic3ModManagerIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Icons\edit.png" />
     <Resource Include="Icons\recycle-bin.png" />
     <Resource Include="Icons\vinyl-disc.png" />
     <Resource Include="Icons\check.png" />
     <Resource Include="Icons\close.png" />
+    <Resource Include="Windows\Vic3ModManagerIcon.png" />
   </ItemGroup>
 
   <ItemGroup>

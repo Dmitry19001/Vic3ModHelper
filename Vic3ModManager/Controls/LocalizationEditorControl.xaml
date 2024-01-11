@@ -17,42 +17,55 @@
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="BorderBrush" Value="LightGray"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Gray"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="6"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
         </Style>
+
         <Style TargetType="Border">
             <Setter Property="BorderBrush" Value="LightGray"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style TargetType="GridSplitter">
-            <Setter Property="Width" Value="1"/>
+            <Setter Property="Width" Value="2"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="Background" Value="LightGray"/>
-            <Setter Property="ResizeBehavior" Value="BasedOnAlignment"/>
+            <Setter Property="ResizeBehavior" Value="CurrentAndNext"/>
+            <Setter Property="Panel.ZIndex" Value="10"/>
+        </Style>
+        <Style TargetType="Rectangle">
+            <Setter Property="Stroke" Value="LightGray"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Fill" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="local:LocalizationColumnControl">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
         </Style>
     </UserControl.Resources>
     
     <Border>
-        <Grid x:Name="MainGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" MinWidth="50"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" SharedSizeGroup="RowGroup"/>
-                <RowDefinition Height="*" SharedSizeGroup="RowGroup"/>
-            </Grid.RowDefinitions>
+        <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel x:Name="MainGrid" Orientation="Horizontal">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-            <TextBlock Text="Keys" FontSize="14" FontWeight="Bold" Margin="5"/>
-            <GridSplitter Grid.Column="0" Grid.Row="0"/>
-            <StackPanel x:Name="KeysListPanel" Grid.Row="1"/>
-            <GridSplitter Grid.Column="0" Grid.Row="1"/>
-            <Button x:Name="AddLanguageButton" Style="{StaticResource AddButtonStyle}" Content="+" Grid.Row="0" Grid.Column="1" Click="AddLanguage_Click"/>
-        </Grid>
+                    <Rectangle Fill="Transparent" Stroke="LightGray" StrokeThickness="1" Grid.Row="0"/>
+                    <TextBlock Text="Keys" Opacity="1" FontWeight="Bold" Grid.Row="0"/>
+
+                    <Rectangle Fill="Transparent" Stroke="LightGray" StrokeThickness="1" Grid.Row="1"/>
+                    <StackPanel x:Name="KeysListPanel" Grid.Row="1"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
     </Border>
 </UserControl>

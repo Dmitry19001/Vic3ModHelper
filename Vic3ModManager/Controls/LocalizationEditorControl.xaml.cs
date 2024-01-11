@@ -1,28 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
+
 
 namespace Vic3ModManager
 {
     /// <summary>
     /// Interaction logic for LocalizationEditorControl.xaml
     /// </summary>
+
     public partial class LocalizationEditorControl : UserControl
     {
         public static readonly DependencyProperty LocalizationDataProperty = DependencyProperty.Register("LocalizationData", typeof(LocalizableTextEntry[]), typeof(LocalizationEditorControl), new PropertyMetadata(null));
-
-        Dictionary<string, StackPanel> TranslationsColumns = new();
+        private Style addButtonStyle;
+        //readonly List<LocalizationColumn> TranslationsColumns = [];
 
         public LocalizableTextEntry[] LocalizationData
         {
@@ -51,11 +45,12 @@ namespace Vic3ModManager
         public LocalizationEditorControl()
         {
             InitializeComponent();
+            addButtonStyle = (Style)FindResource("AddButtonStyle");
         }
 
         private void AddLanguage_Click(object sender, RoutedEventArgs e)
         {
-            AddNewLanguage();
+            AddNewLanguage("New language");
         }
 
         private void AddNewKey(string text)
@@ -68,55 +63,60 @@ namespace Vic3ModManager
             KeysListPanel.Children.Add(keyBlock);
         }
 
-        private void AddNewLanguage(string langTitle = null)
+        private void AddNewLanguage(string langTitle)
         {
-            // Dynamically add a new language column
-            ColumnDefinition newColumn = new ColumnDefinition();
-            newColumn.Width = new GridLength(1, GridUnitType.Star);
-            MainGrid.ColumnDefinitions.Insert(MainGrid.ColumnDefinitions.Count - 1, newColumn);
+            // CODE IS SHIT
+            // TODO REMAKE
 
-            // Add grid splitter (Style is in xaml)
-            // To every row
-            for (int i = 0; i < MainGrid.RowDefinitions.Count; i++)
+            // adding to main grid LocalizationColumnControl
+            
+            // Deleting old add button if exists by simple math
+            if (MainGrid.Children.Count > 1)
             {
-                GridSplitter gridSplitter = new GridSplitter();
-                Grid.SetRow(gridSplitter, i);
-                Grid.SetColumn(gridSplitter, MainGrid.ColumnDefinitions.Count - 2);
-                MainGrid.Children.Add(gridSplitter);
-            }
+                Button addbutton = (Button)MainGrid.Children[MainGrid.Children.Count - 1];
+                addbutton.Click -= AddLanguage_Click;
 
-            // Create a TextBox for the language title in Row 0
-            TextBox languageTitleTextBox = new()
+                MainGrid.Children.RemoveAt(MainGrid.Children.Count - 1);
+            }            
+
+            LocalizationColumnControl localizationColumnControl = new(
+                langTitle,
+                LocalizationData);
+
+            localizationColumnControl.OnDataChanged += OnColumnDataChanged;
+
+            MainGrid.Children.Add(localizationColumnControl);
+
+            // creating new add button
+            // <Button x:Name="AddLanguageButton" Style="{StaticResource AddButtonStyle}" Content="+" Click="AddLanguage_Click"/>
+
+            Button button = new()
             {
-                Text = langTitle?? "New Language"
+                Style = addButtonStyle,
+                Content = "+"
             };
+            button.Click += AddLanguage_Click;
 
-            Grid.SetRow(languageTitleTextBox, 0);
-            Grid.SetColumn(languageTitleTextBox, MainGrid.ColumnDefinitions.Count - 2);
-            MainGrid.Children.Add(languageTitleTextBox);
+            MainGrid.Children.Add(button);
 
-            // Create StackPanel for Textboxes in Row 1
-            StackPanel translationsPanel = new();
-            Grid.SetRow(translationsPanel, 1);
-            Grid.SetColumn(translationsPanel, MainGrid.ColumnDefinitions.Count - 2);
-            MainGrid.Children.Add(translationsPanel);
-
-            // Create TextBoxes for data in stackPanel
-            for (int i = 1; i <  LocalizationData.Length; i++)
+            // Scroll to end 
+            Dispatcher.InvokeAsync(() =>
             {
-                string defaultText = LocalizationData[i].Translations.ContainsKey(langTitle ?? "") ? LocalizationData[i].Translations[langTitle] : LocalizationData[i].Key;
+                MainScrollViewer.ScrollToRightEnd();
+            }, DispatcherPriority.Background);
+        }
 
-                TextBox dataTextBox = new()
-                {
-                    Text = defaultText
-                };
-                Grid.SetRow(dataTextBox, i);
-                Grid.SetColumn(dataTextBox, MainGrid.ColumnDefinitions.Count - 2);
-                translationsPanel.Children.Add(dataTextBox);
-            }
+        private void OnColumnDataChanged(object sender, RoutedEventArgs e)
+        {
+            LocalizationColumnControl localizationColumnControl = (LocalizationColumnControl)sender;
+            Debug.WriteLine($"Data from {localizationColumnControl.LanguageTitle}");
+            Debug.WriteLine($"ID: {localizationColumnControl.LocalizationValues[0].Key}");
 
-            // Move Add button to last column
-            Grid.SetColumn(AddLanguageButton, MainGrid.ColumnDefinitions.Count - 1);
+            string keys = String.Join(",", localizationColumnControl.LocalizationValues[0].Translations.Keys);
+            string values = String.Join(",", localizationColumnControl.LocalizationValues[0].Translations.Values);
+
+            Debug.WriteLine($"Langs: {keys}");
+            Debug.WriteLine($"Values: {values}");
         }
     }
 }

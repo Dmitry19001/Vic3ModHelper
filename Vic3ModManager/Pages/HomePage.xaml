@@ -10,11 +10,28 @@
       Foreground="White">
 
     <Page.Resources>
+        <Thickness x:Key="FormItemMargin">0, 12</Thickness>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#FF313131"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="White"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10, 5"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="FormInfoStyle">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="{StaticResource FormItemMargin}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#FF313131"/>
+            <Setter Property="Foreground" Value="#FF313131"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <!--<Setter Property="Margin" Value="{StaticResource FormItemMargin}"/>-->
+        </Style>
+        <Style TargetType="local:AnimatedPlaceholderTextBox">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="{StaticResource FormItemMargin}"/>
         </Style>
     </Page.Resources>
     <Grid>
@@ -29,22 +46,25 @@
             Available functionality: 
             <LineBreak/>
             - Music mod generator (WIP)
+             <LineBreak/>
+            - Localization editor (WIP)
         </TextBlock>
 
 
         <Grid Margin="10" Grid.Row="1">
             <!--Here will be form with fields for mod name, author, description-->
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <!--LABEL FOR FORM-->
                 <RowDefinition Height="Auto"/>
                 <!--FORM-->
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <!--CONTINUE BUTTON-->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <!--CONTINUE BUTTONS-->
+                <RowDefinition Height="Auto"/>
                 <!--LOAD MOD-->
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -53,27 +73,28 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="18" Margin="0, 10" Grid.Row="0" Grid.Column="1" Text="Please fill the form below to begin:"/>
+            <TextBlock Style="{StaticResource FormInfoStyle}" Grid.Row="0" Grid.Column="1" Text="Please fill the form below to begin:"/>
 
-            <Grid Margin="0,10" Grid.Row="1" Grid.Column="1">
-                <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModName" Placeholder="Enter your mod name here..." />
-            </Grid>
+            <local:AnimatedPlaceholderTextBox Grid.Row="1" Grid.Column="1" x:Name="ModName" Placeholder="Mod name:" />
 
-            <Grid Margin="0,10" Grid.Row="2" Grid.Column="1">
-                <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModDescription" Placeholder="Enter your description here..." />
-            </Grid>
+            <local:AnimatedPlaceholderTextBox Grid.Row="2" Grid.Column="1" x:Name="ModDescription" Placeholder="Description:" />
 
-            <Grid Margin="0,10" Grid.Row="3" Grid.Column="1">
-                <local:AnimatedPlaceholderTextBox FontSize="16" x:Name="ModVersion" Placeholder="Mod version here..." />
-            </Grid>
+            <local:AnimatedPlaceholderTextBox Margin="0,12,0,0" Grid.Row="3" Grid.Column="1" x:Name="ModVersion" Placeholder="Mod version:" />
 
-            <WrapPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center">
-                <Button x:Name="UpdateModDataButton" Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Update mod data" HorizontalAlignment="Left" Padding="10, 5" Click="UpdateModDataButton_Click"/>
-                <Button Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Create new mod" HorizontalAlignment="Left" Padding="10, 5" Click="ContinueButton_Click"/>
+            <!--Combobox with default languages-->
+
+            <StackPanel Grid.Row="4" Grid.Column="1" Margin="0,2">
+                <TextBlock Text="Default language:" Margin="5,0,0,0" FontSize="16"/>
+                <ComboBox Name="DefaultLangugeSelector"/>
+            </StackPanel>
+
+            <WrapPanel Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" Margin="{StaticResource FormItemMargin}">
+                <Button x:Name="UpdateModDataButton" Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Update mod data" HorizontalAlignment="Left" Click="UpdateModDataButton_Click"/>
+                <Button Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Create new mod" HorizontalAlignment="Left" Click="ContinueButton_Click"/>
             </WrapPanel>
 
             
-            <Grid Grid.Row="5" Grid.Column="1" Margin="0,10,0,0">
+            <Grid Grid.Row="6" Grid.Column="1" Margin="{StaticResource FormItemMargin}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>

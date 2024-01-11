@@ -111,7 +111,7 @@ namespace Vic3ModManager
                 {
                     if (loadedMod.ModStructureIteration != Mod.MOD_STUCTURE_ITERATION)
                     {
-                        File.Copy(filePath, filePath.Replace(".json", $"_backup{DateTime.Now:ddMMyyhhmm}.json"));
+                        File.Copy(filePath, filePath.Replace(".json", $"_backup_{DateTime.Now:dd_MM_yy_hh_mm}.json"));
 
                         loadedMod = MigrateToCurrentVersion(loadedMod);
 
@@ -138,8 +138,10 @@ namespace Vic3ModManager
 
         public static Mod MigrateToCurrentVersion(Mod oldMod)
         {
-            new NotImplementedException();
-            return new Mod("test", "test", "test");
+            Mod newMod = new Mod(oldMod.Name, oldMod.Description, oldMod.Version, oldMod.MusicAlbums.ToArray(), oldMod.DefaultLanguage);
+
+            return newMod;
+            //return new Mod("test", "test", "test");
         }
 
     }
