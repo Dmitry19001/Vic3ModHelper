@@ -22,7 +22,7 @@ namespace Vic3ModManager
 
         private void LoadMusicData()
         {
-
+            if (ModManager.CurrentMod == null) return;
             if (ModManager.CurrentMod.MusicAlbums.Count < 1) return;
 
             List<LocalizableTextEntry> localizableTextEntries = new();

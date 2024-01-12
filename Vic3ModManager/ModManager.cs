@@ -11,7 +11,7 @@ namespace Vic3ModManager
 {
     public static class ModManager
     {
-        public static EventHandler OnModSwitched;
+        public static EventHandler? OnModSwitched;
 
         public static void AddMod(Mod mod)
         {
@@ -51,10 +51,12 @@ namespace Vic3ModManager
 
         public static void SaveCurrentMod()
         {
+            if (CurrentMod == null) return;
+
             SaveMod(CurrentMod);
         }
 
-        public static void UpdateCurrentMod(string name, string description, string version)
+        public static void UpdateCurrentMod(string name, string description, string version, GameLanguages.DefaultLanguages defLanguage)
         {
             if (CurrentMod == null) return;
 
@@ -63,6 +65,7 @@ namespace Vic3ModManager
             CurrentMod.Name = name;
             CurrentMod.Description = description;
             CurrentMod.Version = version;
+            CurrentMod.DefaultLanguage = defLanguage;
 
             if (oldName != name)
             {
@@ -105,7 +108,7 @@ namespace Vic3ModManager
                 string filePath = isExternalFile? file : Path.Combine("./Mods", $"{file}.json");
                 string fileContent = File.ReadAllText(filePath);
 
-                Mod loadedMod = JsonConvert.DeserializeObject<Mod>(fileContent);
+                Mod? loadedMod = JsonConvert.DeserializeObject<Mod>(fileContent);
 
                 if (loadedMod != null)
                 {
@@ -138,10 +141,9 @@ namespace Vic3ModManager
 
         public static Mod MigrateToCurrentVersion(Mod oldMod)
         {
-            Mod newMod = new Mod(oldMod.Name, oldMod.Description, oldMod.Version, oldMod.MusicAlbums.ToArray(), oldMod.DefaultLanguage);
+            Mod newMod = new(oldMod.Name, oldMod.Description, oldMod.Version, [.. oldMod.MusicAlbums], oldMod.DefaultLanguage);
 
             return newMod;
-            //return new Mod("test", "test", "test");
         }
 
     }

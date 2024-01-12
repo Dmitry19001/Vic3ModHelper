@@ -1,4 +1,6 @@
-﻿namespace Vic3ModManager
+﻿using System;
+
+namespace Vic3ModManager
 {
     // Need to convert DefaultLanguages to ingame id for localization.
     // English: "l_english" etc.

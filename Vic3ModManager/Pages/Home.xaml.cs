@@ -102,7 +102,9 @@ namespace Vic3ModManager
         {
             if (ValidateForm())
             {
-                Mod mod = new(ModName.Text, ModDescription.Text, ModVersion.Text);
+                var defLanguage = (GameLanguages.DefaultLanguages)DefaultLangugeSelector.SelectedIndex;
+
+                Mod mod = new(ModName.Text, ModDescription.Text, ModVersion.Text, defaultLanguage: defLanguage);
 
                 if (ModManager.CurrentMod != null && ModManager.CurrentMod.Name == mod.Name)
                 {
@@ -135,7 +137,8 @@ namespace Vic3ModManager
         {
             if (ValidateForm())
             {
-                ModManager.UpdateCurrentMod(ModName.Text, ModDescription.Text, ModVersion.Text);
+                var defLanguage = (GameLanguages.DefaultLanguages)DefaultLangugeSelector.SelectedIndex;
+                ModManager.UpdateCurrentMod(ModName.Text, ModDescription.Text, ModVersion.Text, defLanguage);
 
                 MessageBox.Show("Mod data updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }

@@ -21,17 +21,12 @@ namespace Vic3ModManager
         {
             InitializeComponent();
 
-            // if debigging, load the test mod
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                ModManager.AddMod(new Mod("test_mod", "test_desc", "0.1"));
-                ModManager.SwitchMod(ModManager.AllMods[0]);
-            }
-
             InitializePages();
 
             Closing += MainWindow_Closing;
             ModManager.OnModSwitched += ModManager_OnModSwitched;
+
+            Settings.IsEnabled = false;
         }
 
 
@@ -237,6 +232,11 @@ namespace Vic3ModManager
         private void SaveProjectButton_Click(object sender, RoutedEventArgs e)
         {
             ModManager.SaveCurrentMod();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.IsEnabled = true;
         }
 
 
