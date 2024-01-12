@@ -73,7 +73,7 @@
             <StackPanel x:Name="Navigations" Height="50" Orientation="Horizontal" VerticalAlignment="Top" Margin="20,10,20,0" MinWidth="100" UseLayoutRounding="False" Grid.Column="0"/>
             <Button x:Name="SaveProjectButton" Grid.Column="1" Content="Save" FontSize="20" Foreground="White" Margin="0, 10, 5, 0" Background="{x:Null}" Click="SaveProjectButton_Click"/>
         </Grid>
-        <Frame Grid.Row="2" x:Name="ContentFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="ContentFrame_ContentRendered"/>
+        <Frame Grid.Row="2" x:Name="MainFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="MainFrame_ContentRendered"/>
 
     </Grid>
 </Window>

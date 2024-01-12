@@ -12,13 +12,13 @@ namespace Vic3ModManager
     // Whole class needs to be refactored
 
 
-    public partial class MusicManagerPage : Page
+    public partial class MusicManager : CustomPage
     {
         private MusicAlbum? currentAlbum = null;
         private MusicAlbumControl? currentAlbumControl = null;
         private AlbumEditorPanelControl? currentAlbumEditorPanelControl = null;
 
-        public MusicManagerPage()
+        public MusicManager()
         {
             InitializeComponent();
 

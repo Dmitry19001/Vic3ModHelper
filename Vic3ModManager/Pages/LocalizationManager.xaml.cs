@@ -11,7 +11,7 @@ namespace Vic3ModManager
     /// <summary>
     /// Interaction logic for LocalizationManager.xaml
     /// </summary>
-    public partial class LocalizationManager : Page
+    public partial class LocalizationManager : CustomPage
     {
         public LocalizationManager()
         {

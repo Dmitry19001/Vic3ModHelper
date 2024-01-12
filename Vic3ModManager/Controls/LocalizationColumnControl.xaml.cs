@@ -10,7 +10,7 @@ namespace Vic3ModManager
     public partial class LocalizationColumnControl : UserControl
     {
         //dependency property for localization title LanguageTitle
-        public RoutedEventHandler OnDataChanged;
+        public RoutedEventHandler? OnDataChanged;
         public static readonly DependencyProperty LanguageTitleProperty = DependencyProperty.Register(
             "LanguageTitle", typeof(string), typeof(LocalizationColumnControl), new PropertyMetadata(string.Empty, OnTextChanged));
 
@@ -19,14 +19,14 @@ namespace Vic3ModManager
             get { return (string)GetValue(LanguageTitleProperty); }
             set { SetValue(LanguageTitleProperty, value); }
         }
-        public LocalizableTextEntry[] LocalizationValues { get; set; }
+        public LocalizableTextEntry[] LocalizationValues { get; private set; } = [];
 
         public LocalizationColumnControl(string title, LocalizableTextEntry[] values)
         {
             InitializeComponent();
 
             LanguageTitle = title;
-            LocalizationValues = values;
+            LocalizationValues = [.. values];
 
             GenerateLayout();
         }

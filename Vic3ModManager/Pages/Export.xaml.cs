@@ -8,14 +8,14 @@ using Ookii.Dialogs.Wpf;
 namespace Vic3ModManager
 {
     /// <summary>
-    /// Interaction logic for ExportPage.xaml
+    /// Interaction logic for Export.xaml
     /// </summary>
-    public partial class ExportPage : Page
+    public partial class Export : CustomPage
     {
         private string modDirectory;
         private bool exportIsCanceled = false;
 
-        public ExportPage()
+        public Export()
         {
             InitializeComponent();
 

@@ -36,10 +36,10 @@ namespace Vic3ModManager
                 AddNewKey(LocalizationData[i].Key);
             }
 
-            foreach (string key in LocalizationData[0].Translations.Keys)
-            {
-                AddNewLanguage(key);
-            }
+            //foreach (string key in LocalizationData[0].Translations.Keys)
+            //{
+            //    AddNewLanguage(key);
+            //}
         }
 
         public LocalizationEditorControl()

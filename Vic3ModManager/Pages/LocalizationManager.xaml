@@ -1,4 +1,4 @@
-﻿<Page x:Class="Vic3ModManager.LocalizationManager"
+﻿<local:CustomPage x:Class="Vic3ModManager.LocalizationManager"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Vic3ModManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="LocalizationManager">
+      Title="Localization Manager">
 
     <Page.Resources>
         <Style TargetType="TextBlock" x:Key="FileNameTextBlockStyle">
@@ -40,4 +40,4 @@
             <local:LocalizationEditorControl x:Name="LocalizationEditor"/>
         </Grid>
     </Grid>
-</Page>
+</local:CustomPage>

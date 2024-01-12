@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Vic3ModManager.Essentials;
 
 namespace Vic3ModManager
 {
@@ -13,8 +14,8 @@ namespace Vic3ModManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Dictionary<string, Func<Page>> pages = [];
-        private int currentPage = 0;
+        private readonly Dictionary<string, Func<CustomPage>> pages = [];
+        private CustomPage? currentPage;
 
         public MainWindow()
         {
@@ -34,41 +35,6 @@ namespace Vic3ModManager
         }
 
 
-        private void UpdateTopBorderState()
-        {
-            bool hasMod = ModManager.CurrentMod != null;
-
-            AnimateTopBorder(hasMod);
-
-            if (hasMod)
-            {
-                ModChooserBlock.Text = ModManager.CurrentMod.Name;
-                TopBorder.ContextMenu = new ContextMenu();
-
-                if (ModManager.AllMods.Count > 1)
-                {
-                    foreach (var mod in ModManager.AllMods)
-                    {
-                        if (mod == ModManager.CurrentMod) continue;
-
-                        MenuItem menuItem = new();
-                        menuItem.Header = mod.Name;
-                        menuItem.Click += (object sender, RoutedEventArgs e) =>
-                        {
-                            SwtichToOtherMod(mod);
-                        };
-
-                        TopBorder.ContextMenu.Items.Add(menuItem);
-                    }
-                }
-            }
-            else
-            {
-                ModChooserBlock.Text = "";
-                TopBorder.ContextMenu = null;
-            }
-        }
-
         private void SwtichToOtherMod(Mod mod)
         {
             var needSave = MessageBox.Show("Do you want save changes before switching?", "Save", MessageBoxButton.YesNo);
@@ -82,6 +48,14 @@ namespace Vic3ModManager
             ReloadCurrentPage();
         }
 
+        private void ReloadCurrentPage()
+        {
+            if (currentPage != null)
+            {
+                ChangePage(currentPage.Name);
+            }
+        }
+
         private void AnimateTopBorder(bool hasMod)
         {
             string storyboardName = hasMod ? "HasModAnimation" : "HasNoModAnimation";
@@ -93,31 +67,88 @@ namespace Vic3ModManager
 
         private void InitializePages()
         {
-            pages.Add("Home", () => new HomePage());
-            pages.Add("Music Manager", () => new MusicManagerPage());
-            pages.Add("Localization Manager", () => new LocalizationManager());
-            pages.Add("Export", () => new ExportPage());
+            AddPage(nameof(Home), () => new Home());
+            AddPage(nameof(MusicManager), () => new MusicManager());
+            AddPage(nameof(LocalizationManager), () => new LocalizationManager());
+            AddPage(nameof(Export), () => new Export());
 
             GenerateNavigationButtons();
 
-            ChangePage("Home");
+            ChangePage(nameof(Home));
+        }
+
+        private void AddPage(string name, Func<CustomPage> pageFactory)
+        {
+            var page = pageFactory();
+            page.RequestPageChange += ChangePage;
+            pages.Add(name, () => page);
         }
 
         private void GenerateNavigationButtons()
         {
-            foreach (KeyValuePair<string, Func<Page>> page in pages)
+            foreach (var page in pages)
             {
-                Button navButton = new();
-                navButton.Content = page.Key;
-                navButton.Click += NavButton_Click;
-                navButton.Style = (Style)FindResource("NavigationButtonStyle");
-                Navigations.Children.Add(navButton);
+                AddNavigationButton(page.Key);
             }
+        }
+
+        private void AddNavigationButton(string pageName)
+        {
+            var navButton = new Button
+            {
+                Content = StringHelpers.ConvertCamelCaseToSpaces(pageName),
+                Style = (Style)FindResource("NavigationButtonStyle")
+            };
+            navButton.Click += NavButton_Click;
+            Navigations.Children.Add(navButton);
+        }
+
+        private void UpdateTopBorderState()
+        {
+            bool hasMod = ModManager.CurrentMod != null;
+
+            AnimateTopBorder(hasMod);
+            UpdateModChooserBlock(hasMod);
+            UpdateTopBorderContextMenu(hasMod);
+        }
+
+        private void UpdateModChooserBlock(bool hasMod)
+        {
+            ModChooserBlock.Text = hasMod ? ModManager.CurrentMod.Name : "";
+        }
+
+        private void UpdateTopBorderContextMenu(bool hasMod)
+        {
+            TopBorder.ContextMenu = hasMod ? CreateModContextMenu() : null;
+        }
+
+        private ContextMenu CreateModContextMenu()
+        {
+            var contextMenu = new ContextMenu();
+
+            if (ModManager.AllMods.Count > 1)
+            {
+                foreach (var mod in ModManager.AllMods)
+                {
+                    if (mod == ModManager.CurrentMod) continue;
+
+                    MenuItem menuItem = new();
+                    menuItem.Header = mod.Name;
+                    menuItem.Click += (object sender, RoutedEventArgs e) =>
+                    {
+                        SwtichToOtherMod(mod);
+                    };
+
+                    contextMenu.Items.Add(menuItem);
+                }
+            }
+
+            return contextMenu;
         }
 
         private void RefreshNavigationButtons()
         {
-            for (int i = 0;  i < Navigations.Children.Count; i++)
+            for (int i = 0; i < Navigations.Children.Count; i++)
             {
                 // Skipping if unable to find a button
                 if (Navigations.Children[i] is not Button navButton) continue;
@@ -130,7 +161,7 @@ namespace Vic3ModManager
                     continue;
                 }
 
-                if (i == currentPage)
+                if (i == GetPageIndex(currentPage.Name))
                 {
                     navButton.IsEnabled = false;
                 }
@@ -148,16 +179,16 @@ namespace Vic3ModManager
         }
 
 
-        public void ChangePage(string key)
+        private void ChangePage(string pageName)
         {
-            ContentFrame.Content = pages[key](); // Create a new instance
-            currentPage = GetPageIndex(key);
+            pageName = pageName.Replace(" ", "");
+            if (pages.TryGetValue(pageName, out var pageFactory))
+            {
+                currentPage = pageFactory();
+                MainFrame.Content = currentPage;
+            }
         }
 
-        public void ReloadCurrentPage()
-        {
-            ContentFrame.Content = pages[pages.Keys.ToList()[currentPage]](); // Create a new instance
-        }
 
         private void SwitchProjectSaveButtonVisibility()
         {
@@ -190,7 +221,7 @@ namespace Vic3ModManager
             }
         }
 
-        private void ContentFrame_ContentRendered(object sender, EventArgs e)
+        private void MainFrame_ContentRendered(object sender, EventArgs e)
         {
             RefreshNavigationButtons();
 
@@ -199,10 +230,8 @@ namespace Vic3ModManager
 
         private void NavButton_Click(object sender, RoutedEventArgs e)
         {
-            Button? button = sender as Button;
-            string? pageKey = button?.Content.ToString();
-
-            if (pageKey != null) ChangePage(pageKey);
+            var button = (Button)sender;
+            ChangePage(button.Content.ToString());
         }
 
         private void SaveProjectButton_Click(object sender, RoutedEventArgs e)

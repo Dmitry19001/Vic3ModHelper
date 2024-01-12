@@ -1,4 +1,4 @@
-﻿<Page x:Class="Vic3ModManager.MusicManagerPage"
+﻿<local:CustomPage x:Class="Vic3ModManager.MusicManager"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Vic3ModManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MusicManagerPage"
+      Title="Music Manager"
       Foreground="White">
 
     <Grid Name="MainGrid" Background="#303030">
@@ -23,4 +23,4 @@
         <Label x:Name="AlbumsEmptyNotice" Content="CREATE NEW ALBUM TO START" Grid.Column="1" VerticalAlignment="Center" Foreground="#4CFFFFFF" HorizontalAlignment="Center" FontSize="30"/>
         <Frame x:Name="AlbumEditorFrame" Grid.Column="1" NavigationUIVisibility="Hidden"/>
     </Grid>
-</Page>
+</local:CustomPage>

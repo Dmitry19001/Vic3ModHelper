@@ -5,26 +5,25 @@ namespace Vic3ModManager
     public class LocalizableTextEntry
     {
         public string Key { get; set; }
-        public Dictionary<string, string> Translations { get; set; } = [];
+        public Dictionary<int, Translation> Translations { get; set; } = [];
 
         public LocalizableTextEntry(string key)
         {
             Key = key;
-
             SetTranslation(key);
         }
 
-        public void SetTranslation(string translation, string? language = null)
+        public void SetTranslation(string translation, string? language = null, int index = 0)
         {
             language ??= GameLanguages.ToString(ModManager.CurrentMod.DefaultLanguage);
 
-            if (!Translations.ContainsKey(language)) 
-            { 
-                Translations.Add(language, translation);
-            }
-            else 
+            if (!Translations.ContainsKey(index))
             {
-                Translations[language] = translation;
+                Translations.Add(index, new Translation(language, translation));
+            }
+            else
+            {
+                Translations[index] = new Translation(language, translation);
             }
         }
 
@@ -32,9 +31,12 @@ namespace Vic3ModManager
         {
             string defaultLanguage = GameLanguages.ToString(ModManager.CurrentMod.DefaultLanguage);
 
-            if (Translations.ContainsKey(defaultLanguage))
+            foreach (var translation in Translations.Values)
             {
-                return Translations[defaultLanguage];
+                if (translation.Language == defaultLanguage)
+                {
+                    return translation.Text;
+                }
             }
 
             return Key;
@@ -42,9 +44,12 @@ namespace Vic3ModManager
 
         public string ToStringByLanguage(string language)
         {
-            if (Translations.ContainsKey(language))
+            foreach (var translation in Translations.Values)
             {
-                return Translations[language];
+                if (translation.Language == language)
+                {
+                    return translation.Text;
+                }
             }
 
             return Key;
