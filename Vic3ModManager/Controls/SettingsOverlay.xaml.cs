@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -10,13 +11,14 @@ namespace Vic3ModManager
     /// </summary>
     public partial class SettingsOverlay : UserControl
     {
+        private bool _isInitialized = false;
+
         public SettingsOverlay()
         {
             InitializeComponent();
             IsEnabledChanged += SettingsOverlay_IsEnabledChanged;
 
             InitializeLanguageSelector();
-            GetSettingsFromConfig();
         }
 
         private void GetSettingsFromConfig()
@@ -27,6 +29,8 @@ namespace Vic3ModManager
 
             AskForConversionConfirm.IsChecked = AppConfig.Instance.AskForConversionConfirm;
             AutoSaveSettings.IsChecked = AppConfig.Instance.AutoSaveIsEnabled;
+
+            _isInitialized = true;
         }
 
         private void InitializeLanguageSelector()
@@ -44,6 +48,7 @@ namespace Vic3ModManager
             if (!(bool)e.OldValue)
             {
                 Visibility = Visibility.Visible;
+                GetSettingsFromConfig();
             }
 
             var storyboard = IsEnabled ? (Storyboard)Resources["FadeInStoryboard"] : (Storyboard)Resources["FadeOutStoryboard"];
@@ -74,6 +79,8 @@ namespace Vic3ModManager
 
         private void SaveSettings()
         {
+            if (!_isInitialized) return;
+
             GameLanguages.DefaultLanguages language = (GameLanguages.DefaultLanguages)LanguageComboBox.SelectedIndex;
             
             AppConfig.Instance.ModDefaultLanguage = language;

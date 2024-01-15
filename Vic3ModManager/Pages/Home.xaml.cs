@@ -33,7 +33,7 @@ namespace Vic3ModManager
                 DefaultLangugeSelector.Items.Add(GameLanguages.ToString(languages[i]));
             }
 
-            DefaultLangugeSelector.SelectedIndex = 1;
+            DefaultLangugeSelector.SelectedIndex = (int)AppConfig.Instance.ModDefaultLanguage;
         }
 
         private void ShowCurrentModData()
