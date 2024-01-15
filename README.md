@@ -14,6 +14,7 @@ Vic3ModManager is a tool designed to enhance the Victoria 3 gaming experience by
 * Multiple mod managment
 * Localization system
 * UI improving (constantly ipmroving)
+* Settings page
 
 ## Installation and Setup
 Currently you can clone the repository and build it yourself.
@@ -35,7 +36,6 @@ Done! You can find the mod in game launcher and play with it. After localization
 
 ## Short-term plans
 * Exporting UI progression (Currently only message on done)
-* Settings page (Not started yet)
 * Multiple language support (Not started yet)
 * FFMPEG-executable auto-download (Not started yet)
 * HOW TO USE Tutorial (Not started yet)
