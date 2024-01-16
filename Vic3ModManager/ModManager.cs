@@ -41,6 +41,8 @@ namespace Vic3ModManager
 
             string[] mods = Directory.GetFiles("./Mods", "*.json");
 
+            if (mods.Length < 1) return [];
+
             for (int i = 0; i < mods.Length; i++)
             {
                 mods[i] = Path.GetFileNameWithoutExtension(mods[i]);

@@ -16,9 +16,7 @@ namespace Vic3ModManager
             InitializeComponent();
 
             InitializeDefaultLanguageComboBox();
-
             ShowCurrentModData();
-
             FindPreviousMods();
         }
 
@@ -61,7 +59,7 @@ namespace Vic3ModManager
             }
             else
             {
-                PreviousModsList.Visibility = Visibility.Hidden;
+                PreviousModsSection.Visibility = Visibility.Hidden;
             }
         }
 
@@ -180,6 +178,11 @@ namespace Vic3ModManager
         private void UpdateModDataButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateCurrentModData();
+        }
+
+        private void PreviousModsList_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            LoadProjectButton.IsEnabled |= true;
         }
     }
 }

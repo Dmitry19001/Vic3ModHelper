@@ -26,10 +26,10 @@ namespace Vic3ModManager
         {
             // Set the default export path
             ExportPathTextBox.Text = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Victoria 3", "mod");
-            
+
             // Scroll to the end of the textbox
-            ExportPathTextBox.CaretIndex = ExportPathTextBox.Text.Length;
-            ExportPathTextBox.ScrollToEnd();
+            // Need dispatcher because the textbox is not rendered yet
+            Dispatcher.BeginInvoke(new Action(() => ExportPathTextBox.ScrollToEnd()));
         }
 
         private void BrowseDirectoryButton_Click(object sender, RoutedEventArgs e)
@@ -103,6 +103,7 @@ namespace Vic3ModManager
                 {
                     case CustomMessageBoxResult.YesDontAskAgain:
                         AppConfig.Instance.AskForConversionConfirm = false;
+                        AppConfig.Instance.Save();
                         break;
                     case CustomMessageBoxResult.Yes:
                         break;

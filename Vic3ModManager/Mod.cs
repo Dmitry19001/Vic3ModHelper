@@ -14,7 +14,7 @@ namespace Vic3ModManager
 
     public class Mod
     {
-        public const string MOD_STUCTURE_ITERATION = "3";
+        public const string MOD_STUCTURE_ITERATION = "5";
 
         private string name;
         private string description;
@@ -34,11 +34,11 @@ namespace Vic3ModManager
                    string description,
                    string version,
                    MusicAlbum[]? musicAlbums = null,
-                   GameLanguages.DefaultLanguages? defaultLanguage = null)
+                   GameLanguages.DefaultLanguages? defaultLanguage = GameLanguages.DefaultLanguages.English)
         {
-            Name = name;
-            Description = description;
-            Version = version;
+            Name = name ?? "untitled";
+            Description = description ?? string.Empty;
+            Version = version ?? "1.0";
             MusicAlbums = new List<MusicAlbum>(musicAlbums ?? []);
             DefaultLanguage = defaultLanguage ?? GameLanguages.DefaultLanguages.English;
         }
@@ -48,15 +48,15 @@ namespace Vic3ModManager
         public string Name
         {
             get => name;
-            set => name = value ?? throw new ArgumentNullException(nameof(value));
+            set => name = value;
         }
         public string Description {
             get => description;
-            set => description = value ?? string.Empty;
+            set => description = value;
         }
         public string Version {
             get => version;
-            set => version = value ?? "1.0";
+            set => version = value;
         }
         public List<MusicAlbum> MusicAlbums {
             get => musicAlbums;
@@ -71,7 +71,7 @@ namespace Vic3ModManager
 
         public override string ToString()
         {
-            return $"Name: {Name}, Description: {Description}, Version: {Version}";
+            return $"Name: {Name}, Description: {Description}, Version: {Version}, DefaultLanguage: {DefaultLanguage}";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -14,13 +15,16 @@ namespace Vic3ModManager
 
     public partial class LocalizationEditorControl : UserControl
     {
-        public static readonly DependencyProperty LocalizationDataProperty = DependencyProperty.Register("LocalizationData", typeof(LocalizableTextEntry[]), typeof(LocalizationEditorControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty LocalizationDataProperty = DependencyProperty.Register("LocalizationData", typeof(List<LocalizableTextEntry>), typeof(LocalizationEditorControl), new PropertyMetadata(null));
         private Style addButtonStyle;
-        //readonly List<LocalizationColumn> TranslationsColumns = [];
 
-        public LocalizableTextEntry[] LocalizationData
+        // TODO event OnDataChanged with arg bool isLanguageDeleted
+        public event RoutedEventHandler? OnDataChanged;
+
+
+        public List<LocalizableTextEntry> LocalizationData
         {
-            get { return (LocalizableTextEntry[])GetValue(LocalizationDataProperty); }
+            get { return (List<LocalizableTextEntry>)GetValue(LocalizationDataProperty); }
             set { 
                 SetValue(LocalizationDataProperty, value);
                 InitializeLocalizationData();
@@ -31,26 +35,31 @@ namespace Vic3ModManager
         {
             if (LocalizationData == null) return;
 
-            for (int i = 0; i < LocalizationData.Length; i++)
+            for (int i = 0; i < LocalizationData.Count; i++)
             {
                 AddNewKey(LocalizationData[i].Key);
             }
 
-            //foreach (string key in LocalizationData[0].Translations.Keys)
-            //{
-            //    AddNewLanguage(key);
-            //}
+            // Generating columns for each language + 1 for placeholder
+            for (int x = 0; x < LocalizationData[0].Translations.Count + 1; x++)
+            {
+                if (x == LocalizationData[0].Translations.Count)
+                {
+                    // Adding placeholder column
+                    AddNewLanguage("New language", x, true);
+                    continue;
+                }
+
+                Translation translation = LocalizationData[0].Translations[x];
+                AddNewLanguage(translation.Language, x);
+            }
+
         }
 
         public LocalizationEditorControl()
         {
             InitializeComponent();
             addButtonStyle = (Style)FindResource("AddButtonStyle");
-        }
-
-        private void AddLanguage_Click(object sender, RoutedEventArgs e)
-        {
-            AddNewLanguage("New language");
         }
 
         private void AddNewKey(string text)
@@ -63,41 +72,27 @@ namespace Vic3ModManager
             KeysListPanel.Children.Add(keyBlock);
         }
 
-        private void AddNewLanguage(string langTitle)
+        private void AddNewLanguage(string langTitle, int translationsId, bool isPlaceHolder = false)
         {
-            // CODE IS SHIT
-            // TODO REMAKE
-
             // adding to main grid LocalizationColumnControl
-            
-            // Deleting old add button if exists by simple math
-            if (MainGrid.Children.Count > 1)
-            {
-                Button addbutton = (Button)MainGrid.Children[MainGrid.Children.Count - 1];
-                addbutton.Click -= AddLanguage_Click;
-
-                MainGrid.Children.RemoveAt(MainGrid.Children.Count - 1);
-            }            
-
+                     
             LocalizationColumnControl localizationColumnControl = new(
                 langTitle,
-                LocalizationData);
+                [.. LocalizationData],
+                translationsId,
+                isPlaceHolder);
 
-            localizationColumnControl.OnDataChanged += OnColumnDataChanged;
+            if (!isPlaceHolder)
+            {
+                localizationColumnControl.OnDataChanged += OnColumnDataChanged;
+                localizationColumnControl.OnDataDeleted += OnColumnDataDeleted;
+            }
+            else
+            {
+                localizationColumnControl.OnAddNewColumnClicked += OnAddNewColumnHandler;
+            }
 
             MainGrid.Children.Add(localizationColumnControl);
-
-            // creating new add button
-            // <Button x:Name="AddLanguageButton" Style="{StaticResource AddButtonStyle}" Content="+" Click="AddLanguage_Click"/>
-
-            Button button = new()
-            {
-                Style = addButtonStyle,
-                Content = "+"
-            };
-            button.Click += AddLanguage_Click;
-
-            MainGrid.Children.Add(button);
 
             // Scroll to end 
             Dispatcher.InvokeAsync(() =>
@@ -106,17 +101,31 @@ namespace Vic3ModManager
             }, DispatcherPriority.Background);
         }
 
+        private void OnAddNewColumnHandler(object sender, RoutedEventArgs e)
+        {
+            // Setting up events for last column before adding new
+            LocalizationColumnControl lastColumn = (LocalizationColumnControl)MainGrid.Children[MainGrid.Children.Count - 1];
+            lastColumn.OnDataChanged += OnColumnDataChanged;
+            lastColumn.OnDataDeleted += OnColumnDataDeleted;
+            lastColumn.OnAddNewColumnClicked -= OnAddNewColumnHandler;
+
+            // Adding new placeholder column
+            AddNewLanguage("New language", lastColumn.TranslationId + 1, true);
+        }
+
+        private void OnColumnDataDeleted(object sender, RoutedEventArgs e)
+        {
+            // Deleteting translations from all keys
+            LocalizationColumnControl localizationColumnControl = (LocalizationColumnControl)sender;
+            LocalizationData.RemoveAt(localizationColumnControl.TranslationId);
+
+            // Reload current page
+            OnDataChanged?.Invoke(this, new LocalizationDataChangedEventArgs(null, true));
+        }
+
         private void OnColumnDataChanged(object sender, RoutedEventArgs e)
         {
-            LocalizationColumnControl localizationColumnControl = (LocalizationColumnControl)sender;
-            Debug.WriteLine($"Data from {localizationColumnControl.LanguageTitle}");
-            Debug.WriteLine($"ID: {localizationColumnControl.LocalizationValues[0].Key}");
-
-            string keys = String.Join(",", localizationColumnControl.LocalizationValues[0].Translations.Keys);
-            string values = String.Join(",", localizationColumnControl.LocalizationValues[0].Translations.Values);
-
-            Debug.WriteLine($"Langs: {keys}");
-            Debug.WriteLine($"Values: {values}");
+            OnDataChanged?.Invoke(this, new LocalizationDataChangedEventArgs(null, false));
         }
     }
 }

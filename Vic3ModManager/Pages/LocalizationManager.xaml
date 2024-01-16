@@ -15,14 +15,11 @@
             <Setter Property="Padding" Value="10,5"/>
             <EventSetter Event="MouseEnter" Handler="FileNameTextBlock_MouseEnter"/>
             <EventSetter Event="MouseLeave" Handler="FileNameTextBlock_MouseLeave"/>
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="MediumPurple"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="True">
-                    <Setter Property="Cursor" Value="Hand"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="FileNameTextBlockActiveStyle" BasedOn="{StaticResource FileNameTextBlockStyle}">
+            <Setter Property="Background" Value="MediumPurple"/>
+            <Setter Property="Cursor" Value="Help"/>
         </Style>
     </Page.Resources>
     

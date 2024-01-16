@@ -74,9 +74,7 @@ namespace Vic3ModManager
 
         private void AddPage(string name, Func<CustomPage> pageFactory)
         {
-            var page = pageFactory();
-            page.RequestPageChange += ChangePage;
-            pages.Add(name, () => page);
+            pages.Add(name, pageFactory);
         }
 
         private void GenerateNavigationButtons()
@@ -179,7 +177,14 @@ namespace Vic3ModManager
             pageName = pageName.Replace(" ", "");
             if (pages.TryGetValue(pageName, out var pageFactory))
             {
+                // Unsubscribe from the current page's RequestPageChange event
+                if (currentPage != null)
+                {
+                    currentPage.RequestPageChange -= ChangePage;
+                }
+
                 currentPage = pageFactory();
+                currentPage.RequestPageChange += ChangePage;
                 MainFrame.Content = currentPage;
             }
         }

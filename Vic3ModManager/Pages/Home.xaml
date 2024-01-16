@@ -93,21 +93,21 @@
                 <Button Margin="5,5" Grid.Row="4" Grid.Column="1" Content="Create new mod" HorizontalAlignment="Left" Click="ContinueButton_Click"/>
             </WrapPanel>
 
-            
-            <Grid Grid.Row="6" Grid.Column="1" Margin="{StaticResource FormItemMargin}">
+
+            <Grid x:Name="PreviousModsSection" Grid.Row="6" Grid.Column="1" Margin="{StaticResource FormItemMargin}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Or load your previous project" TextAlignment="Center" Grid.Row="0" Margin="0,10"/>
-                <ListBox x:Name="PreviousModsList" Foreground="White" Background="Transparent" Grid.Row="1"/>
+                <ListBox x:Name="PreviousModsList" Foreground="White" Background="Transparent" Grid.Row="1" SelectionChanged="PreviousModsList_SelectionChanged"/>
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="LoadProjectButton" Grid.Column="0" Content="Load" VerticalAlignment="Top" Click="LoadProjectButton_Click"/>
+                    <Button x:Name="LoadProjectButton" IsEnabled="False" Grid.Column="0" Content="Load" VerticalAlignment="Top" Click="LoadProjectButton_Click"/>
                     <Button x:Name="BrowseProjectButton" Grid.Column="1" Content="Load from..." VerticalAlignment="Top" Click="BrowseProjectButton_Click"/>
                 </Grid>
             </Grid>

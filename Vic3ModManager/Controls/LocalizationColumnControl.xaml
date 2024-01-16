@@ -21,23 +21,69 @@
             <Setter Property="StrokeThickness" Value="1"/>
             <Setter Property="Fill" Value="Transparent"/>
         </Style>
+        <Style TargetType="Border" x:Key="LocalizationControlButtonStyle">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="100"/>
+            <Setter Property="Background" Value="#FF4C4C4C"/>
+            <Setter Property="Width" Value="31"/>
+            <Setter Property="Height" Value="31"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style x:Key="NewColumnButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF4C4C4C" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="40"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
     </UserControl.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <Rectangle Grid.Row="0"/>
-        <TextBox x:Name="LanguageTitleBox"
-                 FontWeight="Bold" 
-                 Text="{Binding LanguageTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LocalizationColumnControl}}}"
-                 Grid.Row="0"
-                 TextChanged="TextChanged_handler"/>
+    <Grid x:Name="MainGrid">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
+            <Rectangle/>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
 
-        <Rectangle Grid.Row="1"/>
-        <StackPanel x:Name="TranslationsList" Grid.Row="1"/>
+                <TextBox x:Name="LanguageTitleBox"
+             FontWeight="Bold" 
+             Text="{Binding LanguageTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LocalizationColumnControl}}}"
+             Grid.Row="0"
+             IsReadOnly="True"/>
+
+                <Border x:Name="EditLanguageTitleButton" 
+                Style="{StaticResource LocalizationControlButtonStyle}"
+                Grid.Column="1" 
+                MouseDown="EditLanguageTitleButton_MouseDown" 
+                MouseEnter="Button_MouseEnter" 
+                MouseLeave="Button_MouseLeave">
+                    <Image Source="/Icons/edit.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <Border x:Name="DeleteButton" 
+                Style="{StaticResource LocalizationControlButtonStyle}"
+                Grid.Column="2" 
+                MouseDown="DeleteButton_MouseDown" 
+                MouseEnter="Button_MouseEnter" 
+                MouseLeave="Button_MouseLeave">
+                    <Image Source="/Icons/recycle-bin.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+
+            <Rectangle Grid.Row="1"/>
+            <StackPanel x:Name="TranslationsList" Grid.Row="1"/>
+        </Grid>
+        <Button x:Name="AddNewColumnButton" Style="{StaticResource NewColumnButtonStyle}" Content="+" Click="AddNewColumnButton_Click"/>
     </Grid>
 </UserControl>

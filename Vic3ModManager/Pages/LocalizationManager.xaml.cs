@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.ConstrainedExecution;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -13,11 +15,22 @@ namespace Vic3ModManager
     /// </summary>
     public partial class LocalizationManager : CustomPage
     {
+        private Style fileNameBlockDefaultStyle;
+        private Style fileNameBlockActiveStyle;
+
         public LocalizationManager()
         {
             InitializeComponent();
 
-            LoadMusicData(); // Load your data here
+            InitializeStyles(); 
+            LoadMusicData();
+            LocalizationEditor.OnDataChanged += DataChangedHandler;
+        }
+
+        private void InitializeStyles()
+        {
+            fileNameBlockActiveStyle = (Style)FindResource("FileNameTextBlockActiveStyle");
+            fileNameBlockDefaultStyle = (Style)FindResource("FileNameTextBlockStyle");
         }
 
         private void LoadMusicData()
@@ -25,13 +38,25 @@ namespace Vic3ModManager
             if (ModManager.CurrentMod == null) return;
             if (ModManager.CurrentMod.MusicAlbums.Count < 1) return;
 
-            List<LocalizableTextEntry> localizableTextEntries = new();
-
             CreateLocalizationFileEntry();
+
+            List<LocalizableTextEntry> localizableTextEntries = CreateLocalizationData();
+
+            LocalizationEditor.LocalizationData = localizableTextEntries;
+        }
+
+        private List<LocalizableTextEntry> CreateLocalizationData()
+        {
+            List<LocalizableTextEntry> localizableTextEntries = [];
 
             for (int i = 0; i < ModManager.CurrentMod.MusicAlbums.Count; i++)
             {
                 MusicAlbum musicAlbum = ModManager.CurrentMod.MusicAlbums[i];
+
+                if (musicAlbum.Title.Translations.Count < 1)
+                {
+                    musicAlbum.Title.SetTranslation(musicAlbum.Title.Key);
+                }
 
                 localizableTextEntries.Add(musicAlbum.Title);
 
@@ -39,13 +64,16 @@ namespace Vic3ModManager
                 {
                     Song song = musicAlbum.Songs[j];
 
+                    if (song.Title.Translations.Count < 1)
+                    {
+                        song.Title.SetTranslation(song.Title.Key);
+                    }
+
                     localizableTextEntries.Add(song.Title);
                 }
             }
 
-            LocalizationEditor.LocalizationData = [.. localizableTextEntries];
-
-            //LocalizationDataGrid.ItemsSource = localizableTextEntries;
+            return localizableTextEntries;
         }
 
         private void CreateLocalizationFileEntry()
@@ -55,8 +83,8 @@ namespace Vic3ModManager
             TextBlock textBlock = new()
             {
                 Text = $"{modName}_Music",
-                Style = (System.Windows.Style)FindResource("FileNameTextBlockStyle"),
-                IsEnabled = false
+                Style = fileNameBlockActiveStyle,
+                ToolTip = $"File name on export: {modName}_Music.txt"
             };
 
             LocFilesPanel.Children.Add(textBlock);
@@ -74,7 +102,7 @@ namespace Vic3ModManager
         {
             TextBlock fileNameBlock = (TextBlock)sender;
 
-            if (fileNameBlock.IsEnabled)
+            if (fileNameBlock.Style != fileNameBlockActiveStyle)
             {
                 fileNameBlock.Background = Brushes.DarkGray;
             }
@@ -83,9 +111,23 @@ namespace Vic3ModManager
         {
             TextBlock fileNameBlock = (TextBlock)sender;
 
-            if (fileNameBlock.IsEnabled)
+            if (fileNameBlock.Style != fileNameBlockActiveStyle)
             {
                 fileNameBlock.Background = Brushes.Transparent;
+            }
+        }
+
+        private void DataChangedHandler(object sender, RoutedEventArgs e)
+        {
+            if (e is not LocalizationDataChangedEventArgs args){ return; }
+
+            if (args.IsLanguageDeleted)
+            {
+                OnRequestPageChange(nameof(LocalizationManager));
+            }
+            else
+            {
+
             }
         }
     }

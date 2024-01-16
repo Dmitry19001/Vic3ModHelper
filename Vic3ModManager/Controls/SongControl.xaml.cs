@@ -49,6 +49,8 @@ namespace Vic3ModManager
         }
         private void EditButton_Click(object sender, MouseButtonEventArgs e)
         {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
             if (IsEditing)
             {
                 Title = SongNameInput.Text;
@@ -73,6 +75,8 @@ namespace Vic3ModManager
 
         private void DeleteButton_Click(object sender, MouseButtonEventArgs e)
         {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
             if (IsEditing)
             {
                 IsEditing = false;

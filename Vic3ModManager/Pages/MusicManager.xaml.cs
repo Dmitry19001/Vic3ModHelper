@@ -9,11 +9,11 @@ namespace Vic3ModManager
     /// </summary>
 
 
-    // Whole class needs to be refactored
-
-
     public partial class MusicManager : CustomPage
     {
+        // NEEDS MVVM REFACTORING
+
+
         private MusicAlbum? currentAlbum = null;
         private MusicAlbumControl? currentAlbumControl = null;
         private AlbumEditorPanelControl? currentAlbumEditorPanelControl = null;
@@ -21,8 +21,6 @@ namespace Vic3ModManager
         public MusicManager()
         {
             InitializeComponent();
-
-            
             InitializeAlbums();
         }
 

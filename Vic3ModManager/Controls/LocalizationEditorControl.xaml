@@ -22,7 +22,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="6"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Opacity" Value="0.75"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Normal"/>
         </Style>
@@ -60,7 +60,7 @@
                     </Grid.RowDefinitions>
 
                     <Rectangle Fill="Transparent" Stroke="LightGray" StrokeThickness="1" Grid.Row="0"/>
-                    <TextBlock Text="Keys" Opacity="1" FontWeight="Bold" Grid.Row="0"/>
+                    <TextBlock Text="Keys" Margin="2" Opacity="1" FontWeight="Bold" Grid.Row="0"/>
 
                     <Rectangle Fill="Transparent" Stroke="LightGray" StrokeThickness="1" Grid.Row="1"/>
                     <StackPanel x:Name="KeysListPanel" Grid.Row="1"/>
