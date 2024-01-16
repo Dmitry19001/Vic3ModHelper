@@ -83,7 +83,25 @@ namespace Vic3ModManager
                 _ => language.ToString(),// Return the enum name for unknown values
             };
         }
-    }   
 
+        public static DefaultLanguages ToDefaultLanguage(string languageString)
+        {
+            return languageString switch
+            {
+                "English" => DefaultLanguages.English,
+                "Brazilian Portuguese" => DefaultLanguages.BrazilianPortuguese,
+                "French" => DefaultLanguages.French,
+                "German" => DefaultLanguages.German,
+                "Polish" => DefaultLanguages.Polish,
+                "Russian" => DefaultLanguages.Russian,
+                "Spanish" => DefaultLanguages.Spanish,
+                "Japanese" => DefaultLanguages.Japanese,
+                "Simplified Chinese" => DefaultLanguages.SimplifiedChinese,
+                "Korean" => DefaultLanguages.Korean,
+                "Turkish" => DefaultLanguages.Turkish,
+                _ => DefaultLanguages.Custom // Default case if no match is found
+            };
+        }
 
+    }
 }

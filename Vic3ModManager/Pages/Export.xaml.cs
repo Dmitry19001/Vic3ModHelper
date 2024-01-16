@@ -81,6 +81,9 @@ namespace Vic3ModManager
                 // Copy the album covers dir {mod}/gfx/interface/illustrations/music_player/{album_title}.dds
                 modExporter.CopyAlbumCovers();
 
+                // Create the localizations dir {mod}/localisation/{language}/{mod_name}_Music_l_{language}.yml
+                modExporter.CreateLocalizations();
+
                 MessageBox.Show("Export complete!");
             }
         }
