@@ -9,12 +9,11 @@ Vic3ModManager is a tool designed to enhance the Victoria 3 gaming experience by
 * PNG, JPG and  DDS cover images support (preview only and export)
 * MP3 to OGG conversion (FFMPEG support)
 * Project saving system
+* Localization system
+* Settings page
 
 ## WORK IN PROGRESS
-* Multiple mod managment
-* Localization system
 * UI improving (constantly ipmroving)
-* Settings page
 
 ## Installation and Setup
 Currently you can clone the repository and build it yourself.
@@ -29,7 +28,9 @@ Requirements for launch:
 - Then you are able to add new songs (you can choose multiple at the same time)
 - You can write Title for your Album or Collection
 - Also you can choose a cover image by pressing on vinyl disk icon (.jpeg, jpg, png and dds are supported)
-- After you've done with the music you can go to export page via navigation on the top of app
+- After you've done with the music you can go to Localization Manager page via navigation on the top of app
+- At the Localization Manager you can add new localizations
+- When you ready you can export your mod at Export page
 - All you have to do is press export and wait for message that everything is done. (For that time there is no progress bar implemented)
 
 Done! You can find the mod in game launcher and play with it. After localization update there will be possibility to make localization files for the mod, but until then it is all that app can do. 
