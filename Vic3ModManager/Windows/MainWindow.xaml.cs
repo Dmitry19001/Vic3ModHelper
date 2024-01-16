@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Vic3ModManager.Essentials;
 
@@ -51,12 +52,12 @@ namespace Vic3ModManager
             }
         }
 
-        private void AnimateTopBorder(bool hasMod)
+        private void AnimateModChooser(bool hasMod)
         {
             string storyboardName = hasMod ? "HasModAnimation" : "HasNoModAnimation";
             if (FindResource(storyboardName) is Storyboard storyboard)
             {
-                storyboard.Begin(TopBorder);
+                storyboard.Begin(ModChooser);
             }
         }
 
@@ -96,11 +97,11 @@ namespace Vic3ModManager
             Navigations.Children.Add(navButton);
         }
 
-        private void UpdateTopBorderState()
+        private void UpdateModChooserState()
         {
             bool hasMod = ModManager.CurrentMod != null;
 
-            AnimateTopBorder(hasMod);
+            AnimateModChooser(hasMod);
             UpdateModChooserBlock(hasMod);
             UpdateTopBorderContextMenu(hasMod);
         }
@@ -112,21 +113,24 @@ namespace Vic3ModManager
 
         private void UpdateTopBorderContextMenu(bool hasMod)
         {
-            TopBorder.ContextMenu = hasMod ? CreateModContextMenu() : null;
+            ModChooser.ContextMenu = hasMod ? CreateModContextMenu() : null;
         }
 
-        private ContextMenu CreateModContextMenu()
+        private ContextMenu? CreateModContextMenu()
         {
-            var contextMenu = new ContextMenu();
+            ContextMenu? contextMenu = null;
 
             if (ModManager.AllMods.Count > 1)
             {
+                contextMenu = new();
                 foreach (var mod in ModManager.AllMods)
                 {
                     if (mod == ModManager.CurrentMod) continue;
 
-                    MenuItem menuItem = new();
-                    menuItem.Header = mod.Name;
+                    MenuItem menuItem = new()
+                    {
+                        Header = mod.Name
+                    };
                     menuItem.Click += (object sender, RoutedEventArgs e) =>
                     {
                         SwtichToOtherMod(mod);
@@ -137,6 +141,20 @@ namespace Vic3ModManager
             }
 
             return contextMenu;
+        }
+
+        private void ModChooserBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                ModChooser.ContextMenu = CreateModContextMenu();
+                ModChooser.ContextMenu.IsOpen = true;
+            }
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                e.Handled = true;
+            }
         }
 
         private void RefreshNavigationButtons()
@@ -247,7 +265,7 @@ namespace Vic3ModManager
 
         private void ModManager_OnModSwitched(object sender, EventArgs e)
         {
-            UpdateTopBorderState();
+            UpdateModChooserState();
         }
     }
 }

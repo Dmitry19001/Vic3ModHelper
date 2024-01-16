@@ -13,7 +13,6 @@ namespace Vic3ModManager
     /// </summary>
     public partial class LocalizationColumnControl : UserControl
     {
-        //dependency property for localization title LanguageTitle
         public RoutedEventHandler? OnDataChanged;
         public RoutedEventHandler? OnDataDeleted;
         public RoutedEventHandler? OnAddNewColumnClicked;
@@ -59,12 +58,6 @@ namespace Vic3ModManager
                 AddNewColumnButton.Visibility = Visibility.Visible;
             }
         }
-
-        // TODO language title changing behavior
-        // should be like this:
-        // 1. with language title should be buttons to change and delete it
-        // 2. when language title is changed, all translations should be changed too
-        // 3. when language title is deleted, all translations should be deleted too (should be confirmed by user or see config)
 
 
         private void GenerateLayout()
@@ -176,8 +169,7 @@ namespace Vic3ModManager
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            Border? border = sender as Border;
-            if (border != null)
+            if (sender is Border border)
             {
                 // Revert to the original color when not hovered
                 border.Background = new SolidColorBrush(Colors.LightGray);
@@ -186,8 +178,7 @@ namespace Vic3ModManager
 
         private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            Border? border = sender as Border;
-            if (border != null)
+            if (sender is Border border)
             {
                 // Revert to the original color when not hovered
                 border.Background = new SolidColorBrush(Color.FromRgb(0x4C, 0x4C, 0x4C));
