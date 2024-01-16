@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vic3ModManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="900" MinWidth="800">
+        Title="Vic3ModManager" Height="900" Width="900" MinWidth="800" Icon="/Windows/Vic3ModManagerIcon.png">
     <Window.Resources>
         <Style x:Key="NavigationButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#404040"/>
@@ -15,24 +15,79 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Margin" Value="0,0,5,0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <!-- Add other setters for additional styling if needed -->
         </Style>
+        <Style x:Key="ModChooserBoxStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="ModChooserStyle" TargetType="Border">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="CornerRadius" Value="25"/>
+            <Setter Property="Padding" Value="15, 25, 15, 0"/>
+            <Setter Property="Margin" Value="0,-55,0,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="AdjustmentsPanelStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+        <Style x:Key="AdjustmentsPanelButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut"/>
+        <Storyboard x:Key="HasModAnimation">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                     To="0,-25,0,0" Duration="0:0:0.3" 
+                     Storyboard.TargetName="ModChooser"
+                     EasingFunction="{StaticResource EaseOut}"/>
+        </Storyboard>
+        <Storyboard x:Key="NoModAnimation">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                     To="0,-55,0,0" Duration="0:0:0.3" 
+                     Storyboard.TargetName="ModChooser"
+                     EasingFunction="{StaticResource EaseOut}"/>
+        </Storyboard>
     </Window.Resources>
-    <Grid Background="#FF303030">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Name="TopPanel" Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="9*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid Background="#FF303030">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <StackPanel x:Name="Navigations" Height="50" Orientation="Horizontal" VerticalAlignment="Top" Margin="20,10,20,0" MinWidth="100" UseLayoutRounding="False" Grid.Column="0"/>
-            <Button x:Name="SaveProjectButton" Grid.Column="1" Content="Save" FontSize="20" Foreground="White" Background="{x:Null}" Click="SaveProjectButton_Click"/>
+            <Border Grid.Row="0" x:Name="ModChooser" Style="{StaticResource ModChooserStyle}" MouseDown="ModChooserBlock_MouseDown">
+                <TextBlock x:Name="ModChooserBlock" Style="{StaticResource ModChooserBoxStyle}"/>
+            </Border>
+
+            <Grid Name="TopPanel" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel x:Name="Navigations" Height="50" Orientation="Horizontal" VerticalAlignment="Top" Margin="20,10,20,0" MinWidth="100" UseLayoutRounding="False" Grid.Column="0"/>
+                <Grid x:Name="AdjustmentsPanel" Grid.Column="1" Style="{StaticResource AdjustmentsPanelStyle}" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="SaveProjectButton" Grid.Column="0" Content="Save" Style="{StaticResource AdjustmentsPanelButtonStyle}" Click="SaveProjectButton_Click"/>
+                    <Button x:Name="SettingsButton" Grid.Column="1" Content="Settings" Style="{StaticResource AdjustmentsPanelButtonStyle}" Click="SettingsButton_Click"/>
+                </Grid>
+            </Grid>
+            <Frame Grid.Row="2" x:Name="MainFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="MainFrame_ContentRendered"/>
         </Grid>
-        <Frame Grid.Row="1" x:Name="ContentFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="ContentFrame_ContentRendered"/>
-
+        <local:SettingsOverlay x:Name="Settings" VerticalAlignment="Stretch" Visibility="Hidden" HorizontalAlignment="Stretch"/>
     </Grid>
 </Window>

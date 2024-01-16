@@ -1,9 +1,7 @@
 ﻿using FFMpegCore;
-using FFMpegCore.Arguments;
 using FFMpegCore.Enums;
 using System.Diagnostics;
 using System.Windows;
-using TagLib.Tiff.Pef;
 
 
 public class AudioConverter

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace Vic3ModManager.Essentials
@@ -77,6 +78,11 @@ namespace Vic3ModManager.Essentials
             string output = input.Select(c => CyrillicToLatinMap.ContainsKey(c) ? CyrillicToLatinMap[c] : c.ToString())
                                  .Aggregate((current, next) => current + next);
             return output;
+        }
+
+        public static string ConvertCamelCaseToSpaces(string input)
+        {
+            return Regex.Replace(input, "(\\B[A-Z])", " $1");
         }
     }
 }

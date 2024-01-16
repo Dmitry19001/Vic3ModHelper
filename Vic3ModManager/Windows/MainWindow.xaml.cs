@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
+using Vic3ModManager.Essentials;
 
 namespace Vic3ModManager
 {
@@ -12,34 +15,209 @@ namespace Vic3ModManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Dictionary<string, Func<Page>> pages = new();
-        private int currentPage = 0;
+        private readonly Dictionary<string, Func<CustomPage>> pages = [];
+        private CustomPage? currentPage;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // if debigging, load the test mod
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                ModManager.AddMod(new Mod("test_mod", "test_desc", "0.1"));
-                ModManager.SwitchMod(ModManager.AllMods[0]);
-            }
-
             InitializePages();
 
             Closing += MainWindow_Closing;
+            ModManager.OnModSwitched += ModManager_OnModSwitched;
+
+            Settings.IsEnabled = false;
+        }
+
+
+        private void SwtichToOtherMod(Mod mod)
+        {
+            var needSave = MessageBox.Show("Do you want save changes before switching?", "Save", MessageBoxButton.YesNo);
+
+            if (needSave == MessageBoxResult.Yes)
+            {
+                ModManager.SaveCurrentMod();
+            }
+
+            ModManager.SwitchMod(mod);
+            ReloadCurrentPage();
+        }
+
+        private void ReloadCurrentPage()
+        {
+            if (currentPage != null)
+            {
+                ChangePage(currentPage.Name);
+            }
+        }
+
+        private void AnimateModChooser(bool hasMod)
+        {
+            string storyboardName = hasMod ? "HasModAnimation" : "HasNoModAnimation";
+            if (FindResource(storyboardName) is Storyboard storyboard)
+            {
+                storyboard.Begin(ModChooser);
+            }
         }
 
         private void InitializePages()
         {
-            pages.Add("Home", () => new HomePage());
-            pages.Add("Music Manager", () => new MusicManagerPage());
-            pages.Add("Export", () => new ExportPage());
+            AddPage(nameof(Home), () => new Home());
+            AddPage(nameof(MusicManager), () => new MusicManager());
+            AddPage(nameof(LocalizationManager), () => new LocalizationManager());
+            AddPage(nameof(Export), () => new Export());
 
             GenerateNavigationButtons();
 
-            ChangePage("Home");
+            ChangePage(nameof(Home));
+        }
+
+        private void AddPage(string name, Func<CustomPage> pageFactory)
+        {
+            pages.Add(name, pageFactory);
+        }
+
+        private void GenerateNavigationButtons()
+        {
+            foreach (var page in pages)
+            {
+                AddNavigationButton(page.Key);
+            }
+        }
+
+        private void AddNavigationButton(string pageName)
+        {
+            var navButton = new Button
+            {
+                Content = StringHelpers.ConvertCamelCaseToSpaces(pageName),
+                Style = (Style)FindResource("NavigationButtonStyle")
+            };
+            navButton.Click += NavButton_Click;
+            Navigations.Children.Add(navButton);
+        }
+
+        private void UpdateModChooserState()
+        {
+            bool hasMod = ModManager.CurrentMod != null;
+
+            AnimateModChooser(hasMod);
+            UpdateModChooserBlock(hasMod);
+            UpdateTopBorderContextMenu(hasMod);
+        }
+
+        private void UpdateModChooserBlock(bool hasMod)
+        {
+            ModChooserBlock.Text = hasMod ? ModManager.CurrentMod.Name : "";
+        }
+
+        private void UpdateTopBorderContextMenu(bool hasMod)
+        {
+            ModChooser.ContextMenu = hasMod ? CreateModContextMenu() : null;
+        }
+
+        private ContextMenu? CreateModContextMenu()
+        {
+            ContextMenu? contextMenu = null;
+
+            if (ModManager.AllMods.Count > 1)
+            {
+                contextMenu = new();
+                foreach (var mod in ModManager.AllMods)
+                {
+                    if (mod == ModManager.CurrentMod) continue;
+
+                    MenuItem menuItem = new()
+                    {
+                        Header = mod.Name
+                    };
+                    menuItem.Click += (object sender, RoutedEventArgs e) =>
+                    {
+                        SwtichToOtherMod(mod);
+                    };
+
+                    contextMenu.Items.Add(menuItem);
+                }
+            }
+
+            return contextMenu;
+        }
+
+        private void ModChooserBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                ModChooser.ContextMenu = CreateModContextMenu();
+                ModChooser.ContextMenu.IsOpen = true;
+            }
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void RefreshNavigationButtons()
+        {
+            for (int i = 0; i < Navigations.Children.Count; i++)
+            {
+                // Skipping if unable to find a button
+                if (Navigations.Children[i] is not Button navButton) continue;
+
+                // Disabling navigation if there are no mods
+                // To avoid crashes
+                if (ModManager.AllMods.Count == 0)
+                {
+                    navButton.IsEnabled = false;
+                    continue;
+                }
+
+                if (i == GetPageIndex(currentPage.Name))
+                {
+                    navButton.IsEnabled = false;
+                }
+                else
+                {
+                    navButton.IsEnabled |= true;
+                }
+            }
+        }
+
+        private int GetPageIndex(string key)
+        {
+            var keys = pages.Keys.ToList();
+            return keys.IndexOf(key);
+        }
+
+
+        private void ChangePage(string pageName)
+        {
+            pageName = pageName.Replace(" ", "");
+            if (pages.TryGetValue(pageName, out var pageFactory))
+            {
+                // Unsubscribe from the current page's RequestPageChange event
+                if (currentPage != null)
+                {
+                    currentPage.RequestPageChange -= ChangePage;
+                }
+
+                currentPage = pageFactory();
+                currentPage.RequestPageChange += ChangePage;
+                MainFrame.Content = currentPage;
+            }
+        }
+
+
+        private void SwitchProjectSaveButtonVisibility()
+        {
+            if (ModManager.CurrentMod == null)
+            {
+                SaveProjectButton.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                SaveProjectButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -61,93 +239,33 @@ namespace Vic3ModManager
             }
         }
 
-        private void GenerateNavigationButtons()
-        {
-            foreach (KeyValuePair<string, Func<Page>> page in pages)
-            {
-                Button navButton = new();
-                navButton.Content = page.Key;
-                navButton.Click += NavButton_Click;
-                navButton.Style = (Style)FindResource("NavigationButtonStyle");
-                Navigations.Children.Add(navButton);
-            }
-        }
-
-        private void NavButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button? button = sender as Button;
-            string? pageKey = button?.Content.ToString();
-            
-            if ( pageKey!= null) ChangePage(pageKey);
-        }
-
-        private void RefreshNavigationButtons()
-        {
-            for (int i = 0;  i < Navigations.Children.Count; i++)
-            {
-                // Skipping if unable to find a button
-                if (Navigations.Children[i] is not Button navButton) continue;
-
-                // Disabling navigation if there are no mods
-                // To avoid crashes
-                if (ModManager.AllMods.Count == 0)
-                {
-                    navButton.IsEnabled = false;
-                    continue;
-                }
-
-                if (i == currentPage)
-                {
-                    navButton.IsEnabled = false;
-                }
-                else
-                {
-                    navButton.IsEnabled |= true;
-                }
-            }
-        }
-
-        private int GetPageIndex(string key)
-        {
-            var keys = pages.Keys.ToList();
-            return keys.IndexOf(key);
-        }
-
-
-        public void ChangePage(string key)
-        {
-            // Cleanup the previous page
-            if (ContentFrame.Content is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
-            ContentFrame.Content = pages[key](); // Create a new instance
-            currentPage = GetPageIndex(key);
-        }
-
-        private void ContentFrame_ContentRendered(object sender, EventArgs e)
+        private void MainFrame_ContentRendered(object sender, EventArgs e)
         {
             RefreshNavigationButtons();
 
             SwitchProjectSaveButtonVisibility();
         }
 
-        private void SwitchProjectSaveButtonVisibility()
+        private void NavButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ModManager.CurrentMod == null)
-            {
-                SaveProjectButton.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                SaveProjectButton.Visibility = Visibility.Visible;
-            }
+            var button = (Button)sender;
+            ChangePage(button.Content.ToString());
         }
 
         private void SaveProjectButton_Click(object sender, RoutedEventArgs e)
         {
             ModManager.SaveCurrentMod();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.IsEnabled = true;
+        }
+
+
+        private void ModManager_OnModSwitched(object sender, EventArgs e)
+        {
+            UpdateModChooserState();
         }
     }
 }

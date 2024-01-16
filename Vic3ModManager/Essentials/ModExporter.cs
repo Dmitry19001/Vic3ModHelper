@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using static Vic3ModManager.GameLanguages;
 using System.Windows;
-using Vic3ModManager.Windows;
 
 
 namespace Vic3ModManager.Essentials
@@ -46,11 +46,11 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     string destinationPath = Path.Combine(modDirectory, "music", albumTitle, $"{songName}.ogg");
 
@@ -90,7 +90,7 @@ namespace Vic3ModManager.Essentials
                     continue;
                 }
 
-                System.IO.File.Copy(album.CoverImagePath, destinationPath, true);
+                File.Copy(album.CoverImagePath, destinationPath, true);
             }
         }
 
@@ -115,13 +115,13 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 stringBuilder.AppendLine($"\n##### {albumTitle}");
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     stringBuilder.AppendLine($"{songName} = {{");
                     stringBuilder.AppendLine($"    music = \"file:/music/{albumTitle}/{songName}.ogg\"");
@@ -160,7 +160,7 @@ namespace Vic3ModManager.Essentials
 
             foreach (MusicAlbum album in ModManager.CurrentMod.MusicAlbums)
             {
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 stringBuilder.AppendLine($"category = {{");
                 stringBuilder.AppendLine($"    id = \"{album.Id}\"");
@@ -169,7 +169,7 @@ namespace Vic3ModManager.Essentials
 
                 foreach (Song song in album.Songs)
                 {
-                    string songName = StringHelpers.FormatString(song.Title);
+                    string songName = StringHelpers.FormatString(song.Title.Key);
 
                     stringBuilder.AppendLine($"        \"{songName}\"");
                 }
@@ -226,13 +226,23 @@ namespace Vic3ModManager.Essentials
 
             int albumCount = ModManager.CurrentMod.MusicAlbums.Count;
 
+            // Adding music/{album_title} directories
             for (int x = 0; x < albumCount; x++)
             {
                 MusicAlbum album = ModManager.CurrentMod.MusicAlbums[x];
 
-                string albumTitle = StringHelpers.FormatString(album.Title);
+                string albumTitle = StringHelpers.FormatString(album.Title.Key);
 
                 directories.Add($"music/{albumTitle}");
+            }
+
+            // Adding localization/{language} directories
+            // Using only language that are used in mod
+            // Music album title should contain everything needed
+            MusicAlbum mAlbum = ModManager.CurrentMod.MusicAlbums[0];
+            foreach (Translation translation in mAlbum.Title.Translations)
+            {
+                directories.Add($"localization/{translation.Language.ToLowerInvariant()}");
             }
 
 
@@ -243,7 +253,65 @@ namespace Vic3ModManager.Essentials
             }
         }
 
-        internal void DeleteModFolder()
+        public void CreateLocalizations()
+        {
+            // Create the localizations dir {mod}/localisation/{language}/{mod_name}_Music_l_{language}.yml
+
+            // File content example:
+            // l_{language}:
+            //     {song_title_key}: "{song_title.{language}.translation}"
+
+            Mod currentMod = ModManager.CurrentMod;
+
+            StringBuilder stringBuilder = new();
+
+            for (int i = 0; i < currentMod.MusicAlbums[0].Title.Translations.Count;  i++)
+            {
+                string language = currentMod.MusicAlbums[0].Title.Translations[i].Language;
+                DefaultLanguages gameLanguage = ToDefaultLanguage(language);
+
+                if (gameLanguage != DefaultLanguages.Custom)
+                {
+                    stringBuilder.AppendLine($"{gameLanguage.ToIngameId()}:");
+                }
+                else
+                {
+                    stringBuilder.AppendLine($"l_{language.ToLowerInvariant()}:");
+                }
+
+                for (int x = 0; x < currentMod.MusicAlbums.Count; x++)
+                {
+                    MusicAlbum album = currentMod.MusicAlbums[x];
+
+                    stringBuilder.AppendLine($"  #{album.Title.Translations[i].Text}");
+                    stringBuilder.AppendLine($"  {album.Title.Key}: \"{album.Title.Translations[i].Text}\"");
+
+                    foreach (Song song in album.Songs)
+                    {
+                        stringBuilder.AppendLine($"  {song.Title.Key}: \"{song.Title.Translations[i].Text}\"");
+                    }
+                    stringBuilder.AppendLine();
+                }
+                // removing last \n
+                stringBuilder.Append("### Generated by Vic3ModManager ###");
+
+                string fileName = $"{StringHelpers.FormatString(currentMod.Name)}_Music_l_{language.ToLowerInvariant()}.yml";
+                string filePath = Path.Combine(modDirectory, "localization", language.ToLowerInvariant(), fileName);
+
+                try
+                {
+                    File.WriteAllText(filePath, stringBuilder.ToString(), Encoding.UTF8);
+                } catch
+                {
+                    MessageBox.Show($"Unable to create file at: {filePath}");
+                }
+
+                stringBuilder.Clear();
+            }
+
+        }
+
+        public void DeleteModFolder()
         {
             try
             {

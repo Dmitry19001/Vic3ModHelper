@@ -10,12 +10,17 @@ namespace Vic3ModManager
     /// <summary>
     /// Represents a mod.
     /// </summary>
+
+
     public class Mod
     {
+        public const string MOD_STUCTURE_ITERATION = "5";
+
         private string name;
         private string description;
         private string version;
         private List<MusicAlbum> musicAlbums;
+        private GameLanguages.DefaultLanguages defaultLanguage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mod"/> class.
@@ -25,37 +30,48 @@ namespace Vic3ModManager
         /// <param name="musicAlbums">The music albums of the mod.</param>
         /// <param name="version">The version of the mod.</param>
         
-        public Mod(string name, string description, string version, MusicAlbum[]? musicAlbums = null)
+        public Mod(string name,
+                   string description,
+                   string version,
+                   MusicAlbum[]? musicAlbums = null,
+                   GameLanguages.DefaultLanguages? defaultLanguage = GameLanguages.DefaultLanguages.English)
         {
-            Name = name;
-            Description = description;
-            Version = version;
-            MusicAlbums = new List<MusicAlbum>(musicAlbums ?? Array.Empty<MusicAlbum>());
+            Name = name ?? "untitled";
+            Description = description ?? string.Empty;
+            Version = version ?? "1.0";
+            MusicAlbums = new List<MusicAlbum>(musicAlbums ?? []);
+            DefaultLanguage = defaultLanguage ?? GameLanguages.DefaultLanguages.English;
         }
 
-        public string ModStructureIteration { get; } = "1";
+        public string ModStructureIteration { get; set; } = MOD_STUCTURE_ITERATION;
 
         public string Name
         {
             get => name;
-            set => name = value ?? throw new ArgumentNullException(nameof(value));
+            set => name = value;
         }
         public string Description {
             get => description;
-            set => description = value ?? string.Empty;
+            set => description = value;
         }
         public string Version {
             get => version;
-            set => version = value ?? "1.0";
+            set => version = value;
         }
         public List<MusicAlbum> MusicAlbums {
             get => musicAlbums;
             set => musicAlbums = value;
         }
 
+        public GameLanguages.DefaultLanguages DefaultLanguage
+        {
+            get => defaultLanguage;
+            set => defaultLanguage = value;
+        }
+
         public override string ToString()
         {
-            return $"Name: {Name}, Description: {Description}, Version: {Version}";
+            return $"Name: {Name}, Description: {Description}, Version: {Version}, DefaultLanguage: {DefaultLanguage}";
         }
     }
 }

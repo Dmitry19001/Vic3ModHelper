@@ -1,4 +1,4 @@
-﻿<Page x:Class="Vic3ModManager.ExportPage"
+﻿<local:CustomPage x:Class="Vic3ModManager.Export"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Vic3ModManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ExportPage"
+      Title="Export"
       Foreground="White">
 
     <Grid>
@@ -37,4 +37,4 @@
         </Grid>
         <Button Grid.Row="1" x:Name="BeginExportButton" Content="Export" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="10" Cursor="Hand" Click="BeginExportButton_Click"/>
     </Grid>
-</Page>
+</local:CustomPage>

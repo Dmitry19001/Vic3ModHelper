@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Vic3ModManager
     /// </summary>
     public class Song
     {
-        private string? title;
+        private LocalizableTextEntry? title;
         private string? originalPath;
         private int duration = 0;
         private int pauseFactor;
@@ -34,15 +35,15 @@ namespace Vic3ModManager
         /// The exact mechanics of how this influences the game's behavior are not fully understood.
         /// </param>
 
-        public Song(string? title,
-                    string? originalPath,
-                    int duration = 0,
-                    int pauseFactor = 75,
-                    bool canBeInterrupted = false,
-                    bool triggerPrioOverride = false,
-                    bool mood = true)
+        public Song(LocalizableTextEntry? title,
+            string? originalPath,
+            int duration = 0,
+            int pauseFactor = 75,
+            bool canBeInterrupted = false,
+            bool triggerPrioOverride = false,
+            bool mood = true)
         {
-            this.Title = title;
+            this.Title = title ?? new LocalizableTextEntry(string.Empty);
             this.OriginalPath = originalPath;
             this.Duration = duration;
 
@@ -52,7 +53,7 @@ namespace Vic3ModManager
             this.Mood = mood;
         }
 
-        public string? Title { get => title; set => title = value; }
+        public LocalizableTextEntry? Title { get => title; set => title = value; }
         public string? OriginalPath { get => originalPath; set => originalPath = value; }
         public int PauseFactor { get => pauseFactor; set => pauseFactor = value; }
         public bool CanBeInterrupted { get => canBeInterrupted; set => canBeInterrupted = value; }

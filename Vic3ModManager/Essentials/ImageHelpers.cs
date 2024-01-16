@@ -12,7 +12,6 @@ namespace Vic3ModManager.Essentials
 
         public static BitmapSource? BitmapImageFromDDS(string ddsPath)
         { 
-            // TODO: Rewrite this method to use CSharpImageLibrary
             try
             {
                 byte[] ddsBytes = File.ReadAllBytes(ddsPath);
@@ -38,7 +37,6 @@ namespace Vic3ModManager.Essentials
 
         public static BitmapSource? BitmapSourceFromDDS(string ddsPath)
         {
-            // TODO: Rewrite this method to use CSharpImageLibrary
             try
             {
                 byte[] ddsBytes = File.ReadAllBytes(ddsPath);

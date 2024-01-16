@@ -8,14 +8,14 @@ using Ookii.Dialogs.Wpf;
 namespace Vic3ModManager
 {
     /// <summary>
-    /// Interaction logic for ExportPage.xaml
+    /// Interaction logic for Export.xaml
     /// </summary>
-    public partial class ExportPage : Page
+    public partial class Export : CustomPage
     {
         private string modDirectory;
         private bool exportIsCanceled = false;
 
-        public ExportPage()
+        public Export()
         {
             InitializeComponent();
 
@@ -26,10 +26,10 @@ namespace Vic3ModManager
         {
             // Set the default export path
             ExportPathTextBox.Text = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Victoria 3", "mod");
-            
+
             // Scroll to the end of the textbox
-            ExportPathTextBox.CaretIndex = ExportPathTextBox.Text.Length;
-            ExportPathTextBox.ScrollToEnd();
+            // Need dispatcher because the textbox is not rendered yet
+            Dispatcher.BeginInvoke(new Action(() => ExportPathTextBox.ScrollToEnd()));
         }
 
         private void BrowseDirectoryButton_Click(object sender, RoutedEventArgs e)
@@ -81,12 +81,17 @@ namespace Vic3ModManager
                 // Copy the album covers dir {mod}/gfx/interface/illustrations/music_player/{album_title}.dds
                 modExporter.CopyAlbumCovers();
 
+                // Create the localizations dir {mod}/localisation/{language}/{mod_name}_Music_l_{language}.yml
+                modExporter.CreateLocalizations();
+
                 MessageBox.Show("Export complete!");
             }
         }
 
         private bool IsMusicConversionAllowed(bool musicNeedsConversion)
         {
+            // TODO: Ask user to download ffmpeg if not found
+            // TODO: Options for download: Auto or Manual (if user don't trust author approach)
             if (musicNeedsConversion && AppConfig.Instance.AskForConversionConfirm)
             {
                 var customMessageBox = new CustomMessageBox("External .exe needed",
@@ -101,6 +106,7 @@ namespace Vic3ModManager
                 {
                     case CustomMessageBoxResult.YesDontAskAgain:
                         AppConfig.Instance.AskForConversionConfirm = false;
+                        AppConfig.Instance.Save();
                         break;
                     case CustomMessageBoxResult.Yes:
                         break;
