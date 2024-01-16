@@ -143,11 +143,10 @@ namespace Vic3ModManager
             return contextMenu;
         }
 
-        private void ModChooserBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ModChooserBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && ModChooser.ContextMenu != null)
             {
-                ModChooser.ContextMenu = CreateModContextMenu();
                 ModChooser.ContextMenu.IsOpen = true;
             }
 
