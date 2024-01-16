@@ -40,6 +40,7 @@ Done! You can find the mod in game launcher and play with it. After localization
 * Multiple language support (Not started yet)
 * FFMPEG-executable auto-download (Not started yet)
 * HOW TO USE Tutorial (Not started yet)
+* Ability to add mod thumbnail
 
 ## Long-term plans or brainstorm
 * Agitator manager
