@@ -112,7 +112,6 @@ namespace Vic3ModManager.Essentials
             ChangeProgress(taskName, false);
         }
 
-
         public async Task CopyMusicFilesAsync(bool convertionIsAllowed)
         {
             await Task.Run(() =>
