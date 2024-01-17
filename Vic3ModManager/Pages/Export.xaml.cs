@@ -165,7 +165,7 @@ namespace Vic3ModManager
         {
             // updating ui here
             ExportProgressBar.Value = e.ProgressPercentage;
-            ExportPercentage.Text = $"{e.ProgressPercentage}% {modExporter.CurrentProgress}/{modExporter.TotalProgress}";
+            ExportPercentage.Text = $"{e.ProgressPercentage}%";
             ExportLogTextBlock.Text += $"\n{e.UserState}";
             ExportLogScrollView.ScrollToEnd();
         }
