@@ -15,7 +15,7 @@ Vic3ModManager is a tool designed to enhance the Victoria 3 gaming experience by
 * UI improving (constantly ipmroving)
 
 ## Installation and Setup
-Currently you can clone the repository and build it yourself.
+Currently you can clone the repository and build it yourself or download one of the releases.
 Requirements for launch:
 - .NET Framework 4.7.2
 - [FFMPEG](https://ffbinaries.com/downloads) executable either in the ./ffmpeg or ./ffmpeg/bin directory for MP3 to OGG conversion (optional, but the game supports only .ogg music).
