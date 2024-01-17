@@ -18,6 +18,9 @@ namespace Vic3ModManager
         private readonly Dictionary<string, Func<CustomPage>> pages = [];
         private CustomPage? currentPage;
 
+        public static MainWindow Instance { get; private set; } = new();
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,6 +31,8 @@ namespace Vic3ModManager
             ModManager.OnModSwitched += ModManager_OnModSwitched;
 
             Settings.IsEnabled = false;
+
+            Instance = this;
         }
 
 
@@ -143,11 +148,10 @@ namespace Vic3ModManager
             return contextMenu;
         }
 
-        private void ModChooserBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ModChooserBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && ModChooser.ContextMenu != null)
             {
-                ModChooser.ContextMenu = CreateModContextMenu();
                 ModChooser.ContextMenu.IsOpen = true;
             }
 
@@ -157,7 +161,7 @@ namespace Vic3ModManager
             }
         }
 
-        private void RefreshNavigationButtons()
+        public void RefreshNavigationButtons()
         {
             for (int i = 0; i < Navigations.Children.Count; i++)
             {
@@ -179,6 +183,17 @@ namespace Vic3ModManager
                 else
                 {
                     navButton.IsEnabled |= true;
+                }
+            }
+        }
+
+        public void ToggleNavigationButtons(bool enabled)
+        {
+            foreach (var navButton in Navigations.Children)
+            {
+                if (navButton is Button button)
+                {
+                    button.IsEnabled = enabled;
                 }
             }
         }

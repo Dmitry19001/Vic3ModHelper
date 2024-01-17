@@ -99,6 +99,8 @@ namespace Vic3ModManager
             ExportProgressPanel.Visibility = Visibility.Visible;
 
             ExportLogTextBlock.Text = $"Starting export process...\n";
+
+            MainWindow.Instance.ToggleNavigationButtons(false);
         }
 
         private void ExportStageDone(object sender, EventArgs e)
@@ -153,6 +155,8 @@ namespace Vic3ModManager
             modExporter.OnStageDone -= ExportStageDone;
 
             modExporter = null;
+
+            MainWindow.Instance.RefreshNavigationButtons();
         }
 
 
