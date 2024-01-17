@@ -4,6 +4,10 @@ using System.Windows.Controls;
 using Vic3ModManager.Essentials;
 using Vic3ModManager.Windows;
 using Ookii.Dialogs.Wpf;
+using TagLib.Riff;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Vic3ModManager
 {
@@ -15,9 +19,15 @@ namespace Vic3ModManager
         private string modDirectory;
         private bool exportIsCanceled = false;
 
+        private ModExporter? modExporter = null;
+        private List<Func<Task>> stageList = new List<Func<Task>>();
+        private int currentStage = 0;
+
         public Export()
         {
             InitializeComponent();
+
+            ExportProgressPanel.Visibility = Visibility.Collapsed;
 
             InitilizeModFolder();
         }
@@ -46,46 +56,114 @@ namespace Vic3ModManager
 
         private void BeginExportButton_Click(object sender, RoutedEventArgs e)
         {
+            StartExport();
+        }
+
+        private void StartExport()
+        {
+            PrepareUI();
+
             exportIsCanceled = false;
 
-            ModExporter modExporter = new(ExportPathTextBox.Text);
+            modExporter = new ModExporter(ExportPathTextBox.Text);
+
+            modExporter.OnProgressChanged += ExportProgressChanged;
+            modExporter.OnProgressDone += ExportDone;
+            modExporter.OnStageDone += ExportStageDone;
 
             // Currently only music mod is generated
+            bool convertMusic = IsMusicConversionAllowed(modExporter.MusicNeedsConversion);
 
-            modExporter.CreateDirectories();
-
-            // Create the mod meta file dir {mod}/.metadata
-            modExporter.CreateModMetaFile();
-
-            if (ModManager.CurrentMod.MusicAlbums.Count > 0)
+            stageList.AddRange(new Func<Task>[]
             {
-                // Create the music player categories file dir {mod}/music/music_player_categories/{mod_name}_categories.txt
-                modExporter.CreateMusicPlayerCategoriesFile();
+                () => modExporter.CreateDirectoriesAsync(),
+                () => modExporter.CreateModMetaFileAsync(),
+                () => modExporter.CreateMusicPlayerCategoriesFileAsync(),
+                () => modExporter.CopyMusicFilesAsync(convertMusic),
+                () => modExporter.CreateMusicListFileAsync(),
+                () => modExporter.CopyAlbumCoversAsync(),
+                () => modExporter.CreateLocalizationsAsync()
+            });
 
-                // Copy the music files dir {mod}/music/{album}/{song_name}.ogg
-                bool isConversionAllowed = IsMusicConversionAllowed(modExporter.musicNeedsConversion);
 
-                if (exportIsCanceled) {
-                    modExporter.DeleteModFolder();
-
-                    MessageBox.Show("Export canceled!");
-
-                    return;
-                }
-
-                modExporter.CopyMusicFiles(isConversionAllowed);
-
-                // Create the music file dir {mod}/music/{mod_name}_music.txt
-                modExporter.CreateMusicFile();
-
-                // Copy the album covers dir {mod}/gfx/interface/illustrations/music_player/{album_title}.dds
-                modExporter.CopyAlbumCovers();
-
-                // Create the localizations dir {mod}/localisation/{language}/{mod_name}_Music_l_{language}.yml
-                modExporter.CreateLocalizations();
-
-                MessageBox.Show("Export complete!");
+            if (exportIsCanceled) {
+                ExportLogTextBlock.Text += $"\nExport cancelled, no files were created!";
+                return; 
             }
+
+            stageList[currentStage].Invoke();
+        }
+
+        private void PrepareUI()
+        {
+            ExportProgressPanel.Visibility = Visibility.Visible;
+
+            ExportLogTextBlock.Text = $"Starting export process...\n";
+        }
+
+        private void ExportStageDone(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                NextStage();
+            });
+        }
+
+        private void NextStage()
+        {
+            // Next stage start here
+            // Each task is a stage
+            if (currentStage < stageList.Count - 1)
+            {
+                currentStage++;
+                stageList[currentStage].Invoke();
+            }
+        }
+
+        private void ExportDone(object sender, EventArgs e)
+        {
+            // Done message here
+            // unsubscribe events
+            this.Dispatcher.Invoke(() =>
+            {
+                CompleteExport();
+            });
+
+        }
+        private void ExportProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                UpdateProgressUI(e);
+            });
+        }
+
+        private void CompleteExport()
+        {
+            ExportLogTextBlock.Text += $"\n\nExport complete!";
+
+            ExportLogScrollView.ScrollToEnd();
+
+            MessageBox.Show("Export complete!");
+
+            stageList = [];
+
+            modExporter.OnProgressChanged -= ExportProgressChanged;
+            modExporter.OnProgressDone -= ExportDone;
+            modExporter.OnStageDone -= ExportStageDone;
+
+            modExporter = null;
+        }
+
+
+
+        private void UpdateProgressUI(ProgressChangedEventArgs e)
+        {
+            // updating ui here
+            ExportProgressBar.Value = e.ProgressPercentage;
+            ExportPercentage.Text = $"{e.ProgressPercentage}% {modExporter.CurrentProgress}/{modExporter.TotalProgress}";
+            ExportLogTextBlock.Text += $"\n{e.UserState}";
+            ExportLogScrollView.ScrollToEnd();
         }
 
         private bool IsMusicConversionAllowed(bool musicNeedsConversion)
