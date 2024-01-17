@@ -10,13 +10,12 @@ Vic3ModManager is a tool designed to enhance the Victoria 3 gaming experience by
 * MP3 to OGG conversion (FFMPEG support)
 * Project saving system
 * Localization system
-* Settings page
 
 ## WORK IN PROGRESS
 * UI improving (constantly ipmroving)
 
 ## Installation and Setup
-Currently you can clone the repository and build it yourself.
+Currently you can clone the repository and build it yourself or download one of the releases.
 Requirements for launch:
 - .NET Framework 4.7.2
 - [FFMPEG](https://ffbinaries.com/downloads) executable either in the ./ffmpeg or ./ffmpeg/bin directory for MP3 to OGG conversion (optional, but the game supports only .ogg music).
@@ -36,7 +35,6 @@ Requirements for launch:
 Done! You can find the mod in game launcher and play with it. After localization update there will be possibility to make localization files for the mod, but until then it is all that app can do. 
 
 ## Short-term plans
-* Exporting UI progression (Currently only message on done)
 * Multiple language support (Not started yet)
 * FFMPEG-executable auto-download (Not started yet)
 * HOW TO USE Tutorial (Not started yet)
