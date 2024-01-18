@@ -237,8 +237,6 @@ namespace Vic3ModManager
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            AppConfig.Instance.Save();
-
             if (ModManager.CurrentMod != null)
             {
                 var result = MessageBox.Show("Do you want to save the current mod before exiting?", "Save mod?", MessageBoxButton.YesNoCancel);
@@ -252,6 +250,8 @@ namespace Vic3ModManager
                     e.Cancel = true;
                 }
             }
+
+            Application.Current.Shutdown();
         }
 
         private void MainFrame_ContentRendered(object sender, EventArgs e)

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
 using System.IO;
 
 namespace Vic3ModManager
@@ -55,8 +56,15 @@ namespace Vic3ModManager
         // Save method as before
         public void Save()
         {
-            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(configPath, json);
+            try
+            {
+                string json = JsonConvert.SerializeObject(this, Formatting.None);
+                File.WriteAllText(configPath, json);
+            }
+            catch  (IOException ex)
+            {
+                Debug.WriteLine($"Failed to save config with exception: {ex.Message}");
+            }
         }
     }
 
