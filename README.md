@@ -30,9 +30,9 @@ Requirements for launch:
 - After you've done with the music you can go to Localization Manager page via navigation on the top of app
 - At the Localization Manager you can add new localizations
 - When you ready you can export your mod at Export page
-- All you have to do is press export and wait for message that everything is done. (For that time there is no progress bar implemented)
+- All you have to do is press export and wait for message that everything is done.
 
-Done! You can find the mod in game launcher and play with it. After localization update there will be possibility to make localization files for the mod, but until then it is all that app can do. 
+Done! You can find the mod in game launcher and play with it.
 
 ## Short-term plans
 * Multiple language support (Not started yet)
