@@ -1,4 +1,4 @@
-# Vic3ModManager
+# Vic3ModHelper
 
 Vic3ModManager is a tool designed to enhance the Victoria 3 gaming experience by allowing users to easily create and manage custom music mods. This tool streamlines the mod creation process, making it accessible for newcomers and those who don't want to spend much time doing routine things.
 
