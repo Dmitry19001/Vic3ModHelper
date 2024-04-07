@@ -1,0 +1,7 @@
+﻿TODO: Add credits for icons
+check: https://www.flaticon.com/authors/pixel-perfect
+close: https://www.flaticon.com/authors/pixel-perfect
+edit: https://www.flaticon.com/authors/alkhalifi-design
+recycle-bin: https://www.flaticon.com/authors/alkhalifi-design
+vinyl-disc: https://www.flaticon.com/authors/nadiinko
+settings: https://www.flaticon.com/authors/nadiinko

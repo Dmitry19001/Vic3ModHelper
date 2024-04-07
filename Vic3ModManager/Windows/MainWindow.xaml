@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Vic3ModManager"
         mc:Ignorable="d"
-        Title="Vic3ModManager" Height="900" Width="900" MinWidth="800" Icon="/Windows/Vic3ModManagerIcon.png">
+        Title="Vic3ModManager" Height="900" Width="900" MinWidth="800" Icon="/Icons/Vic3ModManagerIcon.png">
     <Window.Resources>
         <Style x:Key="NavigationButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#404040"/>
@@ -43,6 +43,7 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="{x:Null}"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="50"/>
         </Style>
         <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut"/>
         <Storyboard x:Key="HasModAnimation">
@@ -80,10 +81,14 @@
                 <Grid x:Name="AdjustmentsPanel" Grid.Column="1" Style="{StaticResource AdjustmentsPanelStyle}" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="SaveProjectButton" Grid.Column="0" Content="Save" Style="{StaticResource AdjustmentsPanelButtonStyle}" Click="SaveProjectButton_Click"/>
-                    <Button x:Name="SettingsButton" Grid.Column="1" Content="Settings" Style="{StaticResource AdjustmentsPanelButtonStyle}" Click="SettingsButton_Click"/>
+                    <Button x:Name="SettingsButton" Grid.Column="1" ToolTip="Settings" Style="{StaticResource AdjustmentsPanelButtonStyle}" Click="SettingsButton_Click">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Icons/settings.png" Stretch="Uniform"/>
+                        </Button.Background>
+                    </Button>
                 </Grid>
             </Grid>
             <Frame Grid.Row="2" x:Name="MainFrame" Content="" Margin="10,80,10,10" NavigationUIVisibility="Hidden" ContentRendered="MainFrame_ContentRendered"/>

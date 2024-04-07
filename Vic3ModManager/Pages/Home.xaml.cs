@@ -55,11 +55,8 @@ namespace Vic3ModManager
 
             if (modList.Length > 0)
             {
+                NoModsAvailableBlock.Visibility = Visibility.Collapsed;
                 PreviousModsList.ItemsSource = modList;
-            }
-            else
-            {
-                PreviousModsSection.Visibility = Visibility.Hidden;
             }
         }
 
